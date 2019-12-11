@@ -4,12 +4,12 @@ node_js:
 cache:
   directories:
     - 'node_modules'
-jobs:
-  include:
-    install:
-      - npm install
-    script:
-      - npm run build
-    if: type = pull_request
-    script:
-      - docker build .
+# jobs:
+#   include:
+#     install:
+#       - npm install
+#     script:
+#       - npm run build
+#     if: type = pull_request
+#     script:
+#       - docker build .
