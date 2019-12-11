@@ -9,7 +9,7 @@
     "build": "rm -rf ./bin rm -rf ./node_modules && npm install && npm run build:prod",
     "build:prod": "npm run build-ts && npm run lint",
     "build:dev": "npm run build-ts --verbose",
-    "test": "jest --forceExit --coverage --verbose",
+    "test": "jest --forceExit --coverage --verbose --passWithNoTests",
     "watch-test": "npm run test -- --watchAll",
     "build-ts": "tsc",
     "lint": "eslint . --ext .js,.ts,.json --fix"
