@@ -5,11 +5,11 @@ WORKDIR /app
 # Install node modules before copying files
 # This way we avoid to re-install the node modules at every build
 COPY package*.json /app/
-RUN npm install
+RUN npm install --silent
 
 # Building the app
 COPY . /app
-RUN npm run build
+RUN npm run build:prod
 
 # Entrypoint
-ENTRYPOINT [ "node", "./bin/app.js" ]
+CMD [ "node", "./bin/app.js" ]
