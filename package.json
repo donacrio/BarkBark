@@ -7,8 +7,8 @@
     "start": "node ./bin/app.js",
     "dev": "npm run build:dev && node ./bin/app.js",
     "build": "rm -rf ./bin rm -rf ./node_modules && npm install && npm run build:prod",
-    "build:prod": "npm run build-ts && npm run lint",
-    "build:dev": "npm run build-ts --verbose",
+    "build:prod": "npm run build-ts --verbose && npm run lint",
+    "build:dev": "npm run build-ts",
     "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
     "test:watch": "npm run test -- --watchAll",
     "build-ts": "tsc",
@@ -26,11 +26,13 @@
   "homepage": "https://github.com/DonaCrio/BarkBark#readme",
   "devDependencies": {
     "@types/jest": "^24.0.23",
+    "@types/n-readlines": "^1.0.0",
     "@types/node": "^12.12.17",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
     "eslint": "^6.7.1",
     "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
@@ -38,7 +40,10 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "fs": "0.0.1-security",
-    "readline": "^1.3.0"
+    "module-alias": "^2.2.2",
+    "n-readlines": "^1.0.0"
+  },
+  "_moduleAliases": {
+    "@barkbark": "bin"
   }
 }

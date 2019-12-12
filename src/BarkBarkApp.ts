@@ -1,19 +1,20 @@
-import * as path from 'path';
-import { ParserManager } from './parsers/ParserManager';
-import { ParserType } from './parsers/types';
+import path from 'path';
+
+import { Parser } from './Parser';
+import { Queue } from './Queue';
+import { Log } from './types';
 
 export class BarkBarkApp {
-  private parserManager: ParserManager;
+  private logsQueue: Queue<Log>;
+  private parser: Parser;
 
   constructor() {
-    this.parserManager = new ParserManager();
-    this.parserManager.addParser(ParserType.FILE, {
-      filepath: path.join(__dirname, '..', 'data', 'sample.csv')
-    });
-    this.parserManager.addParser(ParserType.CLI, {});
+    this.logsQueue = new Queue(1000);
+    this.parser = new Parser(path.join(__dirname, '..', 'data', 'sample.csv'), this.logsQueue);
   }
 
   run() {
-    this.parserManager.run();
+    setInterval(() => this.parser.readLine(), 10);
+    setInterval(() => console.log(this.logsQueue.getLastElements(1)), 1000);
   }
 }

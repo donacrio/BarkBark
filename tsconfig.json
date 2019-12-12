@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2018",
     "module": "commonjs",
     "sourceMap": true,
     "outDir": "bin",
@@ -8,7 +8,9 @@
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "baseUrl": "./src",
+    "paths": { "@barkbark/*": ["*"] }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
