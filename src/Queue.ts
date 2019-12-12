@@ -1,4 +1,7 @@
 import { Log } from './types';
+import { waitFor } from './utils';
+
+export type Fn = (...args: any[]) => any;
 
 export class Queue<T> {
   private capacity: number;
@@ -11,18 +14,32 @@ export class Queue<T> {
     this.store = [];
   }
 
-  isFull = () => this.size == this.capacity;
-  isEmpty = () => this.size == 0;
-
-  enqueue = (el: T) => {
+  public enqueue = async (el: T): Promise<void> => {
     if (this.isFull()) {
-      return;
+      this.dequeue();
     }
     this.size++;
     this.store.push(el);
   };
 
-  dequeue = (): T | null => {
+  public getLastElements = (n: number): T[] => {
+    const arr: T[] = [];
+    const start = Math.max(0, this.size - n);
+    for (let i = start; i < this.size; i++) {
+      arr[i] = this.store[i];
+    }
+    return arr;
+  };
+
+  private isFull = (): boolean => {
+    return this.size == this.capacity;
+  };
+
+  private isEmpty = (): boolean => {
+    return this.size == 0;
+  };
+
+  private dequeue = (): T | null => {
     if (this.isEmpty()) {
       return null;
     }

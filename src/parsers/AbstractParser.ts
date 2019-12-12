@@ -1,10 +1,36 @@
 import * as RL from 'readline';
-export abstract class AbstractParser {
-  private readLine: RL.Interface;
+import { Log } from '../types';
+import { Queue } from '../Queue';
 
-  constructor(input: NodeJS.ReadableStream) {
-    this.readLine = RL.createInterface({
+export abstract class AbstractParser {
+  public readLineInterface: RL.Interface;
+
+  constructor(input: NodeJS.ReadableStream, queue: Queue<Log>) {
+    this.readLineInterface = RL.createInterface({
       input
     });
+    this.readLineInterface.on('line', (line: string) => {
+      this.readLineInterface.pause();
+      console.log(line);
+      queue.enqueue(this.parseString(line));
+    });
+    this.readLineInterface.pause();
   }
+
+  public readLine = (): void => {
+    this.readLineInterface.resume();
+  };
+
+  public parseString = (str: string): Log => {
+    const fields = str.split(',');
+    return {
+      remotehost: fields[0],
+      rfc931: fields[1],
+      authuser: fields[2],
+      date: Number.parseInt(fields[3]),
+      request: fields[4],
+      status: Number.parseInt(fields[5]),
+      bytes: Number.parseInt(fields[6])
+    };
+  };
 }

@@ -1,8 +1,10 @@
 import { AbstractParser } from './AbstractParser';
-import { ParserOptions } from '@babel/core';
+import { ParserOptions } from './types';
+import { Queue } from '../Queue';
+import { Log } from '../types';
 
 export class CLIParser extends AbstractParser {
-  constructor() {
-    super(process.stdin);
+  constructor(queue: Queue<Log>, _options: ParserOptions) {
+    super(process.stdin, queue);
   }
 }

@@ -1,7 +1,19 @@
+import * as path from 'path';
+import { ParserManager } from './parsers/ParserManager';
+import { ParserType } from './parsers/types';
+
 export class BarkBarkApp {
-  private static counter: number = 0;
+  private parserManager: ParserManager;
+
+  constructor() {
+    this.parserManager = new ParserManager();
+    this.parserManager.addParser(ParserType.FILE, {
+      filepath: path.join(__dirname, '..', 'data', 'sample_csv.txt')
+    });
+    this.parserManager.addParser(ParserType.CLI, {});
+  }
 
   run() {
-    setInterval(() => console.log(`Counter is ${BarkBarkApp.counter++}\r`), 1000);
+    this.parserManager.run();
   }
 }

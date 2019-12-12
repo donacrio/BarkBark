@@ -1,6 +1,6 @@
 import { PathLike } from 'fs';
 
-export enum Parser {
+export enum ParserType {
   CLI = 'cli',
   FILE = 'file'
 }
