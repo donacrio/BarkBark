@@ -1,6 +1,3 @@
-import { Log } from './types';
-import { waitFor } from './utils';
-
 export type Fn = (...args: any[]) => any;
 
 export class Queue<T> {
@@ -22,13 +19,17 @@ export class Queue<T> {
     this.store.push(el);
   };
 
-  public getLastElements = (n: number): T[] => {
-    const arr: T[] = [];
-    const start = Math.max(0, this.size - n);
-    for (let i = start; i < this.size; i++) {
-      arr[i] = this.store[i];
+  public dequeue = (): T | null => {
+    if (this.isEmpty()) {
+      return null;
     }
-    return arr;
+    this.size--;
+    return this.store.shift()!;
+  };
+
+  public getLastElements = (n: number): T[] => {
+    const start = Math.max(0, this.size - n);
+    return this.store.slice(start, this.store.length);
   };
 
   private isFull = (): boolean => {
@@ -37,13 +38,5 @@ export class Queue<T> {
 
   private isEmpty = (): boolean => {
     return this.size == 0;
-  };
-
-  private dequeue = (): T | null => {
-    if (this.isEmpty()) {
-      return null;
-    }
-    this.size--;
-    return this.store.shift()!;
   };
 }

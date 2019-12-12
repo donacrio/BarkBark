@@ -1,4 +1,4 @@
-export class NotInputFileError extends Error {
+export class NoFilepathError extends Error {
   constructor(message?: string) {
     super(message);
   }

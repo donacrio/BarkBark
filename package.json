@@ -9,8 +9,8 @@
     "build": "rm -rf ./bin rm -rf ./node_modules && npm install && npm run build:prod",
     "build:prod": "npm run build-ts && npm run lint",
     "build:dev": "npm run build-ts --verbose",
-    "test": "jest --forceExit --coverage --verbose --passWithNoTests",
-    "watch-test": "npm run test -- --watchAll",
+    "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
+    "test:watch": "npm run test -- --watchAll",
     "build-ts": "tsc",
     "lint": "eslint . --ext .js,.ts,.json --fix"
   },
@@ -34,6 +34,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
+    "ts-jest": "^24.2.0",
     "typescript": "^3.7.2"
   },
   "dependencies": {

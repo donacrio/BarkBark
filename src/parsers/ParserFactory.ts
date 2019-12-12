@@ -4,7 +4,7 @@ import { AbstractParser } from './AbstractParser';
 import { FileParser } from './FileParser';
 import { NotImplementedError } from '../exceptions/NotImplementedError';
 import { Log } from '../types';
-import { Queue } from '../Queue';
+import { Queue } from '../lib/Queue';
 
 export class ParserFactory {
   getParser = (parserType: ParserType, queue: Queue<Log>, options: ParserOptions): AbstractParser => {

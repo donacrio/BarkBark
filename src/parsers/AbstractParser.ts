@@ -1,9 +1,9 @@
 import * as RL from 'readline';
 import { Log } from '../types';
-import { Queue } from '../Queue';
+import { Queue } from '../lib/Queue';
 
 export abstract class AbstractParser {
-  public readLineInterface: RL.Interface;
+  private readLineInterface: RL.Interface;
 
   constructor(input: NodeJS.ReadableStream, queue: Queue<Log>) {
     this.readLineInterface = RL.createInterface({
@@ -11,10 +11,10 @@ export abstract class AbstractParser {
     });
     this.readLineInterface.on('line', (line: string) => {
       this.readLineInterface.pause();
-      console.log(line);
       queue.enqueue(this.parseString(line));
     });
     this.readLineInterface.pause();
+    this.readLine();
   }
 
   public readLine = (): void => {

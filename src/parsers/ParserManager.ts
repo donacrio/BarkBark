@@ -1,6 +1,6 @@
 import { ParserFactory } from './ParserFactory';
 import { AbstractParser } from './AbstractParser';
-import { Queue } from '../Queue';
+import { Queue } from '../lib/Queue';
 import { Log } from '../types';
 import { ParserType, ParserOptions } from './types';
 

@@ -8,7 +8,7 @@ export class BarkBarkApp {
   constructor() {
     this.parserManager = new ParserManager();
     this.parserManager.addParser(ParserType.FILE, {
-      filepath: path.join(__dirname, '..', 'data', 'sample_csv.txt')
+      filepath: path.join(__dirname, '..', 'data', 'sample.csv')
     });
     this.parserManager.addParser(ParserType.CLI, {});
   }

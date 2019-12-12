@@ -1,6 +1,6 @@
 import { AbstractParser } from './AbstractParser';
 import { ParserOptions } from './types';
-import { Queue } from '../Queue';
+import { Queue } from '../lib/Queue';
 import { Log } from '../types';
 
 export class CLIParser extends AbstractParser {
