@@ -1,11 +1,9 @@
-import { Log } from '@barkbark/types';
 import { LogQueue } from '@barkbark/LogQueue';
 
 import { Aggregator } from './Aggregator';
 import { TrafficAggregator } from './TrafficAggregator';
 import { SectionsAggregator } from './SectionsAggregator';
-
-import { AggregatorName } from '.';
+import { AggregatorName } from './types';
 
 export class AggregatorManager {
   private _logQueue: LogQueue;

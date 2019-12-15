@@ -1,5 +1,3 @@
-import { Queue } from '@barkbark/lib/Queue';
-import { Log } from '@barkbark/types';
 import { LogQueue } from '@barkbark/LogQueue';
 
 import { AggregatorName } from './types';
