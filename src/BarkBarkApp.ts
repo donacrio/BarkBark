@@ -1,20 +1,24 @@
 import path from 'path';
+import { Parser } from '@barkbark/Parser';
+import { AggregatorManager, AggregatorName } from '@barkbark/aggregators';
 
-import { Parser } from './Parser';
-import { Queue } from './Queue';
-import { Log } from './types';
+import { LogQueue } from './LogQueue';
 
 export class BarkBarkApp {
-  private logsQueue: Queue<Log>;
-  private parser: Parser;
+  private _logsQueue: LogQueue;
+  private _parser: Parser;
+  private _aggregatorManager: AggregatorManager;
 
   constructor() {
-    this.logsQueue = new Queue(1000);
-    this.parser = new Parser(path.join(__dirname, '..', 'data', 'sample.csv'), this.logsQueue);
+    this._logsQueue = new LogQueue(1000);
+    this._parser = new Parser(path.join(__dirname, '..', 'data', 'sample.csv'), this._logsQueue);
+    this._aggregatorManager = new AggregatorManager(this._logsQueue);
+    this._aggregatorManager.addAggregator(AggregatorName.TRAFFIC, 10000);
+    this._aggregatorManager.addAggregator(AggregatorName.SECTIONS, 10000);
   }
 
   run() {
-    setInterval(() => this.parser.readLine(), 10);
-    setInterval(() => console.log(this.logsQueue.getLastElements(1)), 1000);
+    setInterval(() => this._parser.readLine(), 1);
+    setInterval(() => this._aggregatorManager.compute(), 1000);
   }
 }
