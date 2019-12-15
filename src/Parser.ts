@@ -5,25 +5,25 @@ import LineByLine from 'n-readlines';
 const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)",(?<date>\d*),"(?<request>.*)",(?<status>\d*),(?<bytes>\d*)$/g;
 
 export class Parser {
-  private liner: LineByLine;
-  private queue: Queue<Log>;
+  private _liner: LineByLine;
+  private _queue: Queue<Log>;
 
   constructor(filepath: string, queue: Queue<Log>) {
-    this.liner = new LineByLine(filepath);
-    this.queue = queue;
+    this._liner = new LineByLine(filepath);
+    this._queue = queue;
   }
 
   public readLine = (): void => {
-    const buffer = this.liner.next();
+    const buffer = this._liner.next();
     if (buffer) {
-      const log = this.parseLine(buffer.toString());
+      const log = this._parseLine(buffer.toString());
       if (log) {
-        this.queue.enqueue(log);
+        this._queue.enqueue(log);
       }
     }
   };
 
-  private parseLine = (line: string): Log | null => {
+  private _parseLine = (line: string): Log | null => {
     // We need to reset the regex because it is defined locally
     // Otherwise on 2 consecutives exec, the regex will return null on the second run before reseting
     REGEX_PATTERN.lastIndex = 0;

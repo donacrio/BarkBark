@@ -1,40 +1,42 @@
 export class Queue<T> {
-  private capacity: number;
-  private size: number;
-  private store: T[];
+  private _capacity: number;
+  private _size: number;
+  private _store: T[];
 
   constructor(capacity: number) {
-    this.capacity = Math.round(capacity);
-    this.size = 0;
-    this.store = [];
+    this._capacity = Math.round(capacity);
+    this._size = 0;
+    this._store = [];
   }
 
   public enqueue = (el: T): void => {
-    if (this.isFull()) {
+    if (this._isFull()) {
       this.dequeue();
     }
-    this.size++;
-    this.store.push(el);
+    this._size++;
+    this._store.push(el);
   };
 
   public dequeue = (): T | null => {
-    if (this.isEmpty()) {
+    if (this._isEmpty()) {
       return null;
     }
-    this.size--;
-    return this.store.shift()!;
+    this._size--;
+    return this._store.shift()!;
   };
 
   public getLastElements = (n: number): T[] => {
-    const start = Math.max(0, this.size - n);
-    return this.store.slice(start, this.store.length);
+    const start = Math.max(0, this._size - n);
+    return this._store.slice(start, this._store.length);
   };
 
-  private isFull = (): boolean => {
-    return this.size == this.capacity;
+  public getSize = (): number => this._size;
+
+  private _isFull = (): boolean => {
+    return this._size == this._capacity;
   };
 
-  private isEmpty = (): boolean => {
-    return this.size == 0;
+  private _isEmpty = (): boolean => {
+    return this._size == 0;
   };
 }
