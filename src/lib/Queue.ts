@@ -1,7 +1,7 @@
 export class Queue<T> {
-  private _capacity: number;
-  private _size: number;
-  private _store: T[];
+  protected _capacity: number;
+  protected _size: number;
+  protected _store: T[];
 
   constructor(capacity: number) {
     this._capacity = Math.round(capacity);
@@ -25,18 +25,18 @@ export class Queue<T> {
     return this._store.shift()!;
   };
 
+  public getSize = (): number => this._size;
+
   public getLastElements = (n: number): T[] => {
     const start = Math.max(0, this._size - n);
     return this._store.slice(start, this._store.length);
   };
 
-  public getSize = (): number => this._size;
-
-  private _isFull = (): boolean => {
+  protected _isFull = (): boolean => {
     return this._size == this._capacity;
   };
 
-  private _isEmpty = (): boolean => {
+  protected _isEmpty = (): boolean => {
     return this._size == 0;
   };
 }

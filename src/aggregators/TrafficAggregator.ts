@@ -1,20 +1,25 @@
+import { Log } from '@barkbark/types';
+import { LogQueue } from '@barkbark/LogQueue';
+
 import { AggregatorName } from './types';
 import { Aggregator } from './Aggregator';
-import { Queue } from '@barkbark/Queue';
-import { Log } from '@barkbark/types';
 
 export class TrafficAggregator extends Aggregator {
-  constructor(queue: Queue<Log>, timeframe: number) {
-    super(AggregatorName.TRAFFIC, queue, timeframe);
+  constructor(logQueue: LogQueue, timeframe: number) {
+    super(AggregatorName.TRAFFIC, logQueue, timeframe);
   }
 
   compute = (): void => {
-    const logs = this._getLogsInTimeframe();
+    const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
+    console.log(this.computeTrafficMap(logs));
+  };
+
+  computeTrafficMap = (logs: Log[]): Map<string, number> => {
     const trafficMap: Map<string, number> = new Map();
     for (const log of logs) {
       const trafficForHost = trafficMap.has(log.remotehost) ? trafficMap.get(log.remotehost)! : 0;
       trafficMap.set(log.remotehost, trafficForHost + 1000 / this._timeframe);
     }
-    console.log(trafficMap);
+    return trafficMap;
   };
 }

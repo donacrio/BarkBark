@@ -1,17 +1,23 @@
-import { AggregatorName } from './types';
-import { Aggregator } from './Aggregator';
-import { Queue } from '@barkbark/Queue';
+import { Queue } from '@barkbark/lib/Queue';
 import { Log } from '@barkbark/types';
+import { LogQueue } from '@barkbark/LogQueue';
+
+import { Aggregator } from './Aggregator';
+import { AggregatorName } from './types';
 
 const REGEX_PATTERN = /^(?<method>\S*) (?<url>\S*) (?<protocol>\S*)$/g;
 
-export class SectionAggregator extends Aggregator {
-  constructor(queue: Queue<Log>, timeframe: number) {
-    super(AggregatorName.TRAFFIC, queue, timeframe);
+export class SectionsAggregator extends Aggregator {
+  constructor(logQueue: LogQueue, timeframe: number) {
+    super(AggregatorName.TRAFFIC, logQueue, timeframe);
   }
 
   compute = (): void => {
-    const logs = this._getLogsInTimeframe();
+    const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
+    console.log(this.computeSectionsMap(logs));
+  };
+
+  computeSectionsMap = (logs: Log[]): Map<string, Map<string, number>> => {
     const sectionsMap: Map<string, Map<string, number>> = new Map();
     for (const log of logs) {
       const section = this._getSectionFromLog(log);
@@ -22,7 +28,7 @@ export class SectionAggregator extends Aggregator {
         sectionsMap.set(log.remotehost, hostSectionsMap);
       }
     }
-    console.log(sectionsMap);
+    return sectionsMap;
   };
 
   private _getSectionFromLog = (log: Log): string | null => {

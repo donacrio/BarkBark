@@ -1,16 +1,18 @@
+import { Log } from '@barkbark/types';
+import { LogQueue } from '@barkbark/LogQueue';
+
 import { Aggregator } from './Aggregator';
-import { AggregatorName } from '.';
 import { TrafficAggregator } from './TrafficAggregator';
 import { SectionAggregator } from './SectionsAggregator';
-import { Queue } from '@barkbark/Queue';
-import { Log } from '@barkbark/types';
+
+import { AggregatorName } from '.';
 
 export class AggregatorManager {
-  private _queue: Queue<Log>;
+  private _logQueue: LogQueue;
   private _aggregators: Aggregator[];
 
-  constructor(queue: Queue<Log>) {
-    this._queue = queue;
+  constructor(logQueue: LogQueue) {
+    this._logQueue = logQueue;
     this._aggregators = [];
   }
 
@@ -30,9 +32,9 @@ export class AggregatorManager {
   private _getAggregator = (aggregatorName: AggregatorName, timeframe: number): Aggregator => {
     switch (aggregatorName) {
       case AggregatorName.SECTIONS:
-        return new SectionAggregator(this._queue, timeframe);
+        return new SectionAggregator(this._logQueue, timeframe);
       case AggregatorName.TRAFFIC:
-        return new TrafficAggregator(this._queue, timeframe);
+        return new TrafficAggregator(this._logQueue, timeframe);
       default:
         throw new Error(`Aggregator ${aggregatorName} not yet implemented`);
     }

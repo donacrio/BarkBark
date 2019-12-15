@@ -1,16 +1,17 @@
 import { Log } from '@barkbark/types';
-import { Queue } from '@barkbark/Queue';
 import LineByLine from 'n-readlines';
+
+import { LogQueue } from './LogQueue';
 
 const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)",(?<date>\d*),"(?<request>.*)",(?<status>\d*),(?<bytes>\d*)$/g;
 
 export class Parser {
   private _liner: LineByLine;
-  private _queue: Queue<Log>;
+  private _logQueue: LogQueue;
 
-  constructor(filepath: string, queue: Queue<Log>) {
+  constructor(filepath: string, logQueue: LogQueue) {
     this._liner = new LineByLine(filepath);
-    this._queue = queue;
+    this._logQueue = logQueue;
   }
 
   public readLine = (): void => {
@@ -18,7 +19,7 @@ export class Parser {
     if (buffer) {
       const log = this._parseLine(buffer.toString());
       if (log) {
-        this._queue.enqueue(log);
+        this._logQueue.enqueue(log);
       }
     }
   };

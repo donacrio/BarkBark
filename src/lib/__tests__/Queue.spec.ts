@@ -1,4 +1,4 @@
-import { Queue } from '@barkbark/Queue';
+import { Queue } from '@barkbark/lib/Queue';
 
 describe('Test Queue.ts', () => {
   let queue: Queue<number>;
