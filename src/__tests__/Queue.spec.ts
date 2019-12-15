@@ -1,9 +1,9 @@
-import { Queue } from '../Queue';
+import { Queue } from '@barkbark/Queue';
 
 describe('Test Queue.ts', () => {
   let queue: Queue<number>;
 
-  beforeEach(() => (queue = new Queue<number>(10)));
+  beforeEach(() => (queue = new Queue(10)));
 
   it('should instanciate as empty queue', () => {
     expect(queue.getLastElements(1)).toEqual([]);

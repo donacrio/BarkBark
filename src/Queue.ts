@@ -1,5 +1,3 @@
-export type Fn = (...args: any[]) => any;
-
 export class Queue<T> {
   private capacity: number;
   private size: number;
@@ -11,7 +9,7 @@ export class Queue<T> {
     this.store = [];
   }
 
-  public enqueue = async (el: T): Promise<void> => {
+  public enqueue = (el: T): void => {
     if (this.isFull()) {
       this.dequeue();
     }

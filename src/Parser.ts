@@ -3,6 +3,7 @@ import { Queue } from '@barkbark/Queue';
 import LineByLine from 'n-readlines';
 
 const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)",(?<date>\d*),"(?<request>.*)",(?<status>\d*),(?<bytes>\d*)$/g;
+
 export class Parser {
   private liner: LineByLine;
   private queue: Queue<Log>;
@@ -35,16 +36,23 @@ export class Parser {
       match.groups['status'] &&
       match.groups['bytes']
     ) {
-      return {
-        remotehost: match.groups['remotehost'],
-        rfc931: match.groups['rfc931'],
-        authuser: match.groups['authuser'],
-        date: Number.parseInt(match.groups['date']),
-        request: match.groups['request'],
-        status: Number.parseInt(match.groups['status']),
-        bytes: Number.parseInt(match.groups['bytes'])
-      };
+      const date = Number.parseInt(match.groups['date']);
+      const status = Number.parseInt(match.groups['date']);
+      const bytes = Number.parseInt(match.groups['bytes']);
+
+      if (date != NaN && status != NaN && bytes != NaN) {
+        return {
+          remotehost: match.groups['remotehost'],
+          rfc931: match.groups['rfc931'],
+          authuser: match.groups['authuser'],
+          date,
+          request: match.groups['request'],
+          status,
+          bytes
+        };
+      }
     }
+
     return null;
   };
 }
