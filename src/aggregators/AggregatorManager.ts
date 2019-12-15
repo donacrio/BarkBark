@@ -3,7 +3,7 @@ import { LogQueue } from '@barkbark/LogQueue';
 
 import { Aggregator } from './Aggregator';
 import { TrafficAggregator } from './TrafficAggregator';
-import { SectionAggregator } from './SectionsAggregator';
+import { SectionsAggregator } from './SectionsAggregator';
 
 import { AggregatorName } from '.';
 
@@ -32,7 +32,7 @@ export class AggregatorManager {
   private _getAggregator = (aggregatorName: AggregatorName, timeframe: number): Aggregator => {
     switch (aggregatorName) {
       case AggregatorName.SECTIONS:
-        return new SectionAggregator(this._logQueue, timeframe);
+        return new SectionsAggregator(this._logQueue, timeframe);
       case AggregatorName.TRAFFIC:
         return new TrafficAggregator(this._logQueue, timeframe);
       default:
