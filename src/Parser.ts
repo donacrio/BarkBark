@@ -24,6 +24,9 @@ export class Parser {
   };
 
   private parseLine = (line: string): Log | null => {
+    // We need to reset the regex because it is defined locally
+    // Otherwise on 2 consecutives exec, the regex will return null on the second run before reseting
+    REGEX_PATTERN.lastIndex = 0;
     const match = REGEX_PATTERN.exec(line);
     if (
       match &&
@@ -37,20 +40,18 @@ export class Parser {
       match.groups['bytes']
     ) {
       const date = Number.parseInt(match.groups['date']);
-      const status = Number.parseInt(match.groups['date']);
+      const status = Number.parseInt(match.groups['status']);
       const bytes = Number.parseInt(match.groups['bytes']);
 
-      if (date != NaN && status != NaN && bytes != NaN) {
-        return {
-          remotehost: match.groups['remotehost'],
-          rfc931: match.groups['rfc931'],
-          authuser: match.groups['authuser'],
-          date,
-          request: match.groups['request'],
-          status,
-          bytes
-        };
-      }
+      return {
+        remotehost: match.groups['remotehost'],
+        rfc931: match.groups['rfc931'],
+        authuser: match.groups['authuser'],
+        date,
+        request: match.groups['request'],
+        status,
+        bytes
+      };
     }
 
     return null;
