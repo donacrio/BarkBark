@@ -1,5 +1,5 @@
-import { Log } from '@barkbark/types';
 import LineByLine from 'n-readlines';
+import { Log } from '@barkbark/lib';
 import { LogQueue } from '@barkbark/LogQueue';
 
 const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)",(?<date>\d*),"(?<request>.*)",(?<status>\d*),(?<bytes>\d*)$/g;
@@ -7,10 +7,12 @@ const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)"
 export class Parser {
   private _liner: LineByLine;
   private _logQueue: LogQueue;
+  private _refreshTime: number;
 
-  constructor(filepath: string, logQueue: LogQueue) {
+  constructor(filepath: string, logQueue: LogQueue, refreshTime: number) {
     this._liner = new LineByLine(filepath);
     this._logQueue = logQueue;
+    this._refreshTime = refreshTime;
   }
 
   public readLine = (): void => {
@@ -22,6 +24,8 @@ export class Parser {
       }
     }
   };
+
+  public getRefreshTime = (): number => this._refreshTime;
 
   private _parseLine = (line: string): Log | null => {
     // We need to reset the regex because it is defined locally

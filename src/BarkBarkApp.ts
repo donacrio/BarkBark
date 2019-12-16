@@ -1,39 +1,63 @@
 import { Parser } from '@barkbark/Parser';
-import { AggregatorManager, AggregatorName } from '@barkbark/aggregators';
-
-import { LogQueue } from './LogQueue';
-import { AlerManager } from './alerts/AlertManager';
+import { LogQueue } from '@barkbark/LogQueue';
+import { AggregatorManager, AggregatorName, Aggregator } from '@barkbark/aggregators';
+import { AlerManager } from '@barkbark/alerts';
+import { BarkBarkUI } from '@barkbark/ui';
+import { BarkBarkConfig } from '@barkbark/lib';
 
 export class BarkBarkApp {
-  private _logsQueue: LogQueue;
+  private _intervals: NodeJS.Timeout[];
   private _parser: Parser;
+  private _logsQueue: LogQueue;
   private _aggregatorManager: AggregatorManager;
   private _alertManager: AlerManager;
+  private _ui: BarkBarkUI;
 
-  constructor(filepath: string) {
-    this._logsQueue = new LogQueue(1000);
-    this._parser = new Parser(filepath, this._logsQueue);
-    this._aggregatorManager = new AggregatorManager(this._logsQueue);
-    this._alertManager = new AlerManager();
+  constructor(config: BarkBarkConfig) {
+    this._intervals = [];
+    this._logsQueue = new LogQueue(config.parser.queueSize);
+    this._parser = new Parser(config.parser.logfile, this._logsQueue, config.parser.refreshTime);
+    this._aggregatorManager = new AggregatorManager(this._logsQueue, config.aggregatorManager.refreshTime);
+    this._alertManager = new AlerManager(config.alertsManager.refreshTime);
+    this._ui = new BarkBarkUI(config.ui.refreshTime);
+
     try {
-      const trafficAggregator = this._aggregatorManager.getAggregator(AggregatorName.TRAFFIC, 30);
-      this._aggregatorManager.addAggregator(trafficAggregator);
-      this._alertManager.addAlertHandlerForAggregator(trafficAggregator, 5);
-      const sectionTrafficAggregator = this._aggregatorManager.getAggregator(AggregatorName.SECTIONS, 30);
-      this._aggregatorManager.addAggregator(sectionTrafficAggregator);
-      this._alertManager.addAlertHandlerForAggregator(sectionTrafficAggregator, 3);
+      config.aggregatorManager.aggregators.forEach(aggregatorConfig =>
+        this._aggregatorManager.addAggregator(
+          this._aggregatorManager.getAggregator(aggregatorConfig.name, aggregatorConfig.timeframe)
+        )
+      );
+      config.alertsManager.alerts.forEach(alertConfig => {
+        const aggregator: Aggregator = this._aggregatorManager.getAggregator(
+          alertConfig.aggregator.name,
+          alertConfig.aggregator.timeframe
+        );
+        this._alertManager.addAlertHandlerForAggregator(aggregator, alertConfig.threshold);
+        this._aggregatorManager.addAggregator(aggregator);
+      });
     } catch (e) {
-      console.log(`Could not add aggregators:\n${e.message}`);
-      this._aggregatorManager = new AggregatorManager(this._logsQueue);
+      console.log(e.message);
     }
   }
 
-  run() {
-    setInterval(() => this._parser.readLine(), 1);
-    setInterval(() => this._aggregatorManager.compute(), 1);
-    setInterval(() => {
-      this._alertManager.compute();
-      console.log(this._alertManager.getPrintableAlerts());
-    }, 2);
-  }
+  public run = (): void => {
+    this._intervals.push(setInterval(() => this._parser.readLine(), this._parser.getRefreshTime()));
+    this._intervals.push(
+      setInterval(() => this._aggregatorManager.compute(), this._aggregatorManager.getRefreshTime())
+    );
+    this._intervals.push(setInterval(() => this._alertManager.compute(), this._alertManager.getRefreshTime()));
+    this._intervals.push(
+      setInterval(() => {
+        this._ui.setMetricsTableData(this._aggregatorManager.getPrintableMetrics());
+        this._ui.setAlerts(this._alertManager.getPrintableAlerts());
+        this._ui.render();
+      }, this._ui.getRefreshTime())
+    );
+  };
+
+  public stop = (): void => {
+    this._intervals.forEach(interval => clearInterval(interval));
+    this._ui.destroy();
+    return process.exit(0);
+  };
 }

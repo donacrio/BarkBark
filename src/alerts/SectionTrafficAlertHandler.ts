@@ -1,5 +1,10 @@
 import { SectionTrafficAggregator, SectionTraffic } from '@barkbark/aggregators';
-import { formatUnixTimeInSecToPrintableDate, formatHitsPerSecond } from '@barkbark/lib';
+import {
+  formatUnixTimeInSecToPrintableDate,
+  formatHitsPerSecond,
+  colorTextInRed,
+  colorTextInGreen
+} from '@barkbark/lib';
 
 import { AlertHandler } from './AlertHandler';
 
@@ -36,16 +41,18 @@ export class SectionTrafficAlertHandler extends AlertHandler {
           };
           this._setAlertFor(hostname, section, alert);
           printableAlerts.push(
-            `High traffic on ${alert.hostname}/${alert.section} generated an alert - hits = ${formatHitsPerSecond(
+            `${colorTextInRed(`High traffic on ${alert.hostname}/${alert.section}`)} -- hits = ${formatHitsPerSecond(
               alert.value
-            )}, triggered at ${formatUnixTimeInSecToPrintableDate(alert.date)}`
+            )} -- time = ${formatUnixTimeInSecToPrintableDate(alert.date)}`
           );
         } else if (sectionTraffic.value <= this._threshold && this._hasAlertFor(hostname, section)) {
           this._deleteAlertFor(hostname, section);
           printableAlerts.push(
-            `Traffic is back to normal on ${hostname} /${section} - hits = ${formatHitsPerSecond(
-              sectionTraffic.value
-            )}, recovered at ${formatUnixTimeInSecToPrintableDate(sectionTraffic.date)}`
+            `${colorTextInGreen(
+              `Traffic is back to normal on ${hostname} /${section}`
+            )} -- hits = ${formatHitsPerSecond(sectionTraffic.value)} -- time = ${formatUnixTimeInSecToPrintableDate(
+              sectionTraffic.date
+            )}`
           );
         }
       }
