@@ -58,6 +58,6 @@ export class BarkBarkApp {
   public stop = (): void => {
     this._intervals.forEach(interval => clearInterval(interval));
     this._ui.destroy();
-    process.exit(0);
+    return process.exit(0);
   };
 }

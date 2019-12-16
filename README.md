@@ -27,20 +27,7 @@ Then run the app:
 npm start
 ```
 
-### Using Docker
-
-You need to have the following programs installed on your machine:
-
-- `docker`
-- `docker-compose`
-
-Just run the following:
-
-```
-docker-compose up
-```
-
-## Run the app in dev mode
+### Run the app in dev mode
 
 You first need to install the node modules:
 
@@ -53,3 +40,25 @@ Then run the app in dev mode:
 ```
 npm run dev
 ```
+
+## Development notes
+
+## Testing
+
+For testing purposes and maintainability, unit tests have been written. You can run them by using the following command:
+
+```
+npm run test
+```
+
+## Dockerfile
+
+The app cannot be run into a Docker container for now because the console library used to build the interface seems \
+to be incompatible with Docker. However, we keep a Dockerfile for the CI jobs (see next section).
+
+## Repository and CI
+
+The development has been made using [a GitHub repository](https://www.github.com/donacrio/BarkBark).
+Pull requests were made to avoid commiting on master directly. Every PR needed to have it's Travis CI jobs passing.
+The Travis jobs are defined in `.travis.yml` file at the root of the project. We build a docker container for every PR to ensure the app is compatible with NodeJS version 10 before every merge on master.
+You can see the details of every jobs that ran on [the Travis repository](https://travis-ci.com/DonaCrio/BarkBark).
