@@ -1,7 +1,6 @@
-import { Log } from '@barkbark/types';
 import { LogQueue } from '@barkbark/LogQueue';
+import { formatHitsPerSecond, Log, AggregatorName } from '@barkbark/lib';
 
-import { AggregatorName } from './types';
 import { Aggregator } from './Aggregator';
 
 export type Traffic = {
@@ -20,6 +19,15 @@ export class TrafficAggregator extends Aggregator {
   public compute = (): void => {
     const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
     this._trafficMap = this.computeTrafficMap(logs);
+  };
+
+  public getPrintableMetricsMap = (): Map<string, string> => {
+    const printableMetricsMap: Map<string, string> = new Map();
+    for (const hostname of this._trafficMap.keys()) {
+      const traffic = this._trafficMap.get(hostname)!;
+      printableMetricsMap.set(hostname, `${formatHitsPerSecond(traffic.value)}`);
+    }
+    return printableMetricsMap;
   };
 
   public computeTrafficMap = (logs: Log[]): Map<string, Traffic> => {

@@ -1,8 +1,7 @@
-import { Log } from '@barkbark/types';
 import { LogQueue } from '@barkbark/LogQueue';
+import { formatHitsPerSecond, Log, AggregatorName } from '@barkbark/lib';
 
 import { Aggregator } from './Aggregator';
-import { AggregatorName } from './types';
 
 const REGEX_PATTERN = /^(?<method>\S*) (?<url>\S*) (?<protocol>\S*)$/g;
 
@@ -22,6 +21,20 @@ export class SectionTrafficAggregator extends Aggregator {
   compute = (): void => {
     const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
     this._sectionTrafficMap = this.computeSectionTrafficMap(logs);
+  };
+
+  public getPrintableMetricsMap = (): Map<string, string> => {
+    const printableMetricsMap: Map<string, string> = new Map();
+    for (const hostname of this._sectionTrafficMap.keys()) {
+      const sectionTrafficMap: Map<string, SectionTraffic> = this._sectionTrafficMap.get(hostname)!;
+      const printableMetrics: string[] = [];
+      for (const section of sectionTrafficMap.keys()) {
+        const sectionTraffic: SectionTraffic = sectionTrafficMap.get(section)!;
+        printableMetrics.push(`/${section}: ${formatHitsPerSecond(sectionTraffic.value)}`);
+      }
+      printableMetricsMap.set(hostname, printableMetrics.join(' || '));
+    }
+    return printableMetricsMap;
   };
 
   computeSectionTrafficMap = (logs: Log[]): Map<string, Map<string, SectionTraffic>> => {

@@ -16,7 +16,7 @@ export class AlerManager {
   public compute = (): void => {
     this._alertHandlers
       .map(alertHandler => alertHandler.compute())
-      .forEach(alerts => this._printableAlerts.push(...alerts));
+      .forEach(printableAlerts => this._printableAlerts.push(...printableAlerts));
   };
 
   public addAlertHandlerForAggregator(aggregator: Aggregator, threshold: number) {

@@ -1,6 +1,6 @@
 import { LogQueue } from '@barkbark/LogQueue';
 
-import { AggregatorName } from './types';
+import { AggregatorName } from '../lib/types';
 
 export abstract class Aggregator {
   protected _name: AggregatorName;
@@ -14,6 +14,7 @@ export abstract class Aggregator {
   }
 
   public abstract compute(): void;
+  public abstract getPrintableMetricsMap(): Map<string, string>;
 
   public getName = (): AggregatorName => this._name;
   public getTimeframe = (): number => this._timeframe;

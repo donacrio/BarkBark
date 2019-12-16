@@ -1,9 +1,11 @@
 import { LogQueue } from '@barkbark/LogQueue';
+import { formatAggregator } from '@barkbark/lib';
 
 import { Aggregator } from './Aggregator';
 import { TrafficAggregator } from './TrafficAggregator';
 import { SectionTrafficAggregator } from './SectionTrafficAggregator';
-import { AggregatorName } from './types';
+
+import { AggregatorName } from '../lib/types';
 
 export class AggregatorManager {
   private _logQueue: LogQueue;
@@ -31,5 +33,30 @@ export class AggregatorManager {
       default:
         throw new Error(`Aggregator ${aggregatorName} not yet implemented`);
     }
+  };
+
+  public getPrintableMetrics = (): string[][] => {
+    const headers: string[] = ['hostname', ...this._aggregators.map(aggregator => formatAggregator(aggregator))];
+    const printableMetrics: string[][] = [headers];
+    const printableMetricsMap = this._getPrintableMetricsMap();
+    for (const hostname of printableMetricsMap.keys()) {
+      printableMetrics.push([hostname, ...printableMetricsMap.get(hostname)!]);
+    }
+    return printableMetrics;
+  };
+
+  private _getPrintableMetricsMap = (): Map<string, string[]> => {
+    const printableMetricsMap = new Map<string, string[]>();
+    const aggregatorsPrintableMetrics: Map<string, string>[] = this._aggregators.map(aggregator =>
+      aggregator.getPrintableMetricsMap()
+    );
+    for (const aggregatorPrintableMetrics of aggregatorsPrintableMetrics) {
+      for (const hostname of aggregatorPrintableMetrics.keys()) {
+        const printableMetricsForHost = printableMetricsMap.has(hostname) ? printableMetricsMap.get(hostname)! : [];
+        printableMetricsForHost.push(aggregatorPrintableMetrics.get(hostname)!);
+        printableMetricsMap.set(hostname, printableMetricsForHost);
+      }
+    }
+    return printableMetricsMap;
   };
 }

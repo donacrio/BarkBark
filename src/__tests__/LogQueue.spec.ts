@@ -1,4 +1,4 @@
-import { Log } from '@barkbark/types';
+import { Log } from '@barkbark/lib';
 import { LogQueue } from '@barkbark/LogQueue';
 
 describe('Test LogQueue.ts', () => {

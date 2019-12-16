@@ -1,3 +1,5 @@
+import { Aggregator } from '@barkbark/aggregators';
+
 export const formatUniximeToSec = (time: number): number => {
   return time / 1000;
 };
@@ -16,4 +18,8 @@ export const formatUnixTimeInSecToPrintableDate = (timeInSec: number): string =>
 
 export const formatHitsPerSecond = (hits: number): string => {
   return `${Math.round(hits * 100) / 100} hits/second`;
+};
+
+export const formatAggregator = (aggregator: Aggregator): string => {
+  return `${aggregator.getName().valueOf()} (${aggregator.getTimeframe()}s)`;
 };

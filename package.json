@@ -40,6 +40,8 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "@types/blessed": "^0.1.15",
+    "blessed": "^0.1.81",
     "module-alias": "^2.2.2",
     "n-readlines": "^1.0.0"
   },

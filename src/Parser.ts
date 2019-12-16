@@ -1,5 +1,5 @@
-import { Log } from '@barkbark/types';
 import LineByLine from 'n-readlines';
+import { Log } from '@barkbark/lib';
 import { LogQueue } from '@barkbark/LogQueue';
 
 const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)",(?<date>\d*),"(?<request>.*)",(?<status>\d*),(?<bytes>\d*)$/g;

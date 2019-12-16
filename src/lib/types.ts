@@ -7,3 +7,8 @@ export type Log = {
   status: number;
   bytes: number;
 };
+
+export enum AggregatorName {
+  SECTIONS = 'sections traffic',
+  TRAFFIC = 'traffic'
+}
