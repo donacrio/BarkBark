@@ -1,17 +1,17 @@
 import { LogQueue } from '@barkbark/LogQueue';
 
-import { SectionsAggregator } from '../SectionsAggregator';
+import { SectionTrafficAggregator } from '../SectionTrafficAggregator';
 
 const FAKE_SECTIONS = ['/api/user', '/api/dog', '/report'];
 const N_REQUESTS_PER_HOST = 200;
 
 describe('Test SectionsAggregator.ts', () => {
   let logQueue: LogQueue;
-  let sectionsAggregator: SectionsAggregator;
+  let sectionsAggregator: SectionTrafficAggregator;
 
   beforeEach(() => {
     logQueue = new LogQueue(1000);
-    sectionsAggregator = new SectionsAggregator(logQueue, 10000);
+    sectionsAggregator = new SectionTrafficAggregator(logQueue, 10000);
     for (let i = 0; i < N_REQUESTS_PER_HOST; i++) {
       for (const section of FAKE_SECTIONS) {
         logQueue.enqueue({
@@ -29,13 +29,15 @@ describe('Test SectionsAggregator.ts', () => {
 
   it('should compute sections for 10s timeframe', () => {
     const logs = logQueue.getLogsInTimeframe(sectionsAggregator.getTimeframe());
-    const sectionsMap = sectionsAggregator.computeSectionsMap(logs);
+    const sectionsMap = sectionsAggregator.computeSectionTrafficMap(logs);
     expect(sectionsMap.has('host')).toBeTruthy();
     const hostSectionsMap = sectionsMap.get('host')!;
     expect(hostSectionsMap.has('api')).toBeTruthy();
-    expect(Math.round(hostSectionsMap.get('api')!)).toEqual(20);
+    expect(Math.round(hostSectionsMap.get('api')!.value)).toEqual(N_REQUESTS_PER_HOST / 10);
+    expect(hostSectionsMap.get('api')!.date).toEqual((N_REQUESTS_PER_HOST - 1) * 100);
     expect(hostSectionsMap.has('report')).toBeTruthy();
-    expect(Math.round(hostSectionsMap.get('report')!)).toEqual(10);
+    expect(Math.round(hostSectionsMap.get('report')!.value)).toEqual(N_REQUESTS_PER_HOST / 20);
+    expect(hostSectionsMap.get('report')!.date).toEqual((N_REQUESTS_PER_HOST - 1) * 100);
   });
 
   it('should not take malformed request into account', () => {
@@ -59,7 +61,7 @@ describe('Test SectionsAggregator.ts', () => {
         bytes: 0
       }
     ];
-    const sectionsMap = sectionsAggregator.computeSectionsMap(logs);
+    const sectionsMap = sectionsAggregator.computeSectionTrafficMap(logs);
     expect(sectionsMap.has('host')).toBeFalsy();
   });
 

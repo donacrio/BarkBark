@@ -32,7 +32,8 @@ describe('Test TrafficAggregator.ts', () => {
     const trafficMap = trafficAggregator.computeTrafficMap(logs);
     for (const host of FAKE_HOSTS) {
       expect(trafficMap.has(host)).toBeTruthy();
-      expect(Math.round(trafficMap.get(host)!)).toEqual(10);
+      expect(Math.round(trafficMap.get(host)!.value)).toEqual(N_REQUESTS_PER_HOST / 20);
+      expect(trafficMap.get(host)!.date).toEqual((N_REQUESTS_PER_HOST - 1) * 100);
     }
   });
   it('should compute without any error', () => {
