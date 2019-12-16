@@ -1,6 +1,5 @@
-import { TrafficAggregator } from '@barkbark/aggregators';
+import { TrafficAggregator, Traffic } from '@barkbark/aggregators';
 import { formatUnixTimeInSecToPrintableDate, formatHitsPerSecond } from '@barkbark/lib';
-import { Traffic } from '@barkbark/aggregators';
 
 import { AlertHandler } from './AlertHandler';
 
@@ -26,7 +25,7 @@ export class TrafficAlertHandler extends AlertHandler {
 
       if (traffic.value > this._threshold && !this._hasAlertFor(hostname)) {
         const alert: TrafficAlert = { hostname, value: traffic.value, date: traffic.date };
-        this._addAlertFor(hostname, alert);
+        this._setAlertFor(hostname, alert);
         printableAlerts.push(
           `High traffic on ${alert.hostname} generated an alert - hits = ${formatHitsPerSecond(
             alert.value
@@ -46,11 +45,7 @@ export class TrafficAlertHandler extends AlertHandler {
 
   private _hasAlertFor = (hostname: string): boolean => this._trafficAlertsMap.has(hostname);
 
-  private getAlertFor = (hostname: string): TrafficAlert | undefined => {
-    return this._trafficAlertsMap.get(hostname);
-  };
-
-  private _addAlertFor = (hostname: string, alert: TrafficAlert): void => {
+  private _setAlertFor = (hostname: string, alert: TrafficAlert): void => {
     this._trafficAlertsMap.set(hostname, alert);
   };
 

@@ -19,6 +19,9 @@ export class BarkBarkApp {
       const trafficAggregator = this._aggregatorManager.getAggregator(AggregatorName.TRAFFIC, 30);
       this._aggregatorManager.addAggregator(trafficAggregator);
       this._alertManager.addAlertHandlerForAggregator(trafficAggregator, 5);
+      const sectionTrafficAggregator = this._aggregatorManager.getAggregator(AggregatorName.SECTIONS, 30);
+      this._aggregatorManager.addAggregator(sectionTrafficAggregator);
+      this._alertManager.addAlertHandlerForAggregator(sectionTrafficAggregator, 3);
     } catch (e) {
       console.log(`Could not add aggregators:\n${e.message}`);
       this._aggregatorManager = new AggregatorManager(this._logsQueue);

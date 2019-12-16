@@ -15,14 +15,13 @@ export class SectionTrafficAggregator extends Aggregator {
   private _sectionTrafficMap: Map<string, Map<string, SectionTraffic>>;
 
   constructor(logQueue: LogQueue, timeframe: number) {
-    super(AggregatorName.TRAFFIC, logQueue, timeframe);
+    super(AggregatorName.SECTIONS, logQueue, timeframe);
     this._sectionTrafficMap = new Map();
   }
 
   compute = (): void => {
     const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
     this._sectionTrafficMap = this.computeSectionTrafficMap(logs);
-    console.log(this._sectionTrafficMap);
   };
 
   computeSectionTrafficMap = (logs: Log[]): Map<string, Map<string, SectionTraffic>> => {

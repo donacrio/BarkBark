@@ -1,11 +1,11 @@
-import { Aggregator, AggregatorName, TrafficAggregator, SectionsAggregator } from '@barkbark/aggregators';
+import { Aggregator, AggregatorName, TrafficAggregator, SectionTrafficAggregator } from '@barkbark/aggregators';
 
 import { AlertHandler } from './AlertHandler';
 import { TrafficAlertHandler } from './TrafficAlertHandler';
-import { SectionsAlertHandler } from './SectionsAlertHandler';
+import { SectionTrafficAlertHandler } from './SectionTrafficAlertHandler';
 
 export class AlerManager {
-  private _alertHandlers: AlertHandler[];
+  public _alertHandlers: AlertHandler[];
   private _printableAlerts: string[];
 
   constructor() {
@@ -35,7 +35,7 @@ export class AlerManager {
       case AggregatorName.TRAFFIC:
         return new TrafficAlertHandler(<TrafficAggregator>aggregator, threshold);
       case AggregatorName.SECTIONS:
-        return new SectionsAlertHandler(<SectionsAggregator>aggregator, threshold);
+        return new SectionTrafficAlertHandler(<SectionTrafficAggregator>aggregator, threshold);
       default:
         throw new Error(`AlertHandler for aggregator ${aggregator.getName()} not yet implemented`);
     }

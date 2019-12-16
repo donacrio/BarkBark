@@ -1,6 +1,5 @@
-import { SectionsAggregator } from '@barkbark/aggregators';
+import { SectionTrafficAggregator, SectionTraffic } from '@barkbark/aggregators';
 import { formatUnixTimeInSecToPrintableDate, formatHitsPerSecond } from '@barkbark/lib';
-import { SectionTraffic, SectionTrafficAggregator } from '@barkbark/aggregators/SectionTrafficAggregator';
 
 import { AlertHandler } from './AlertHandler';
 
@@ -11,10 +10,10 @@ export type SectionTrafficAlert = {
   date: number;
 };
 
-export class SectionsAlertHandler extends AlertHandler {
+export class SectionTrafficAlertHandler extends AlertHandler {
   private _sectionTrafficAlertsMap: Map<string, Map<string, SectionTrafficAlert>>;
 
-  constructor(aggregator: SectionsAggregator, threshold: number) {
+  constructor(aggregator: SectionTrafficAggregator, threshold: number) {
     super(aggregator, threshold);
     this._sectionTrafficAlertsMap = new Map();
   }
@@ -28,7 +27,6 @@ export class SectionsAlertHandler extends AlertHandler {
       const hostSectionTrafficMap: Map<string, SectionTraffic> = sectionTrafficMap.get(hostname)!;
       for (const section of hostSectionTrafficMap.keys()) {
         const sectionTraffic: SectionTraffic = hostSectionTrafficMap.get(section)!;
-
         if (sectionTraffic.value > this._threshold && !this._hasAlertFor(hostname, section)) {
           const alert: SectionTrafficAlert = {
             hostname,
@@ -60,21 +58,12 @@ export class SectionsAlertHandler extends AlertHandler {
     return this._sectionTrafficAlertsMap.has(hostname) && this._sectionTrafficAlertsMap.get(hostname)!.has(section);
   }
 
-  private _getAlertFor = (hostname: string, section: string): SectionTrafficAlert | undefined => {
-    if (this._sectionTrafficAlertsMap.has(hostname)) {
-      const hostSectionTrafficMap: Map<string, SectionTrafficAlert> = this._sectionTrafficAlertsMap.get(hostname)!;
-      if (hostSectionTrafficMap.has(section)) {
-        return hostSectionTrafficMap.get(section)!;
-      }
-    }
-  };
-
   private _setAlertFor = (hostname: string, section: string, alert: SectionTrafficAlert): void => {
-    if (this._sectionTrafficAlertsMap.has(hostname)) {
-      const hostSectionTrafficMap: Map<string, SectionTrafficAlert> = this._sectionTrafficAlertsMap.get(hostname)!;
-      hostSectionTrafficMap.set(section, alert);
-      this._sectionTrafficAlertsMap.set(hostname, hostSectionTrafficMap);
-    }
+    const hostSectionTrafficMap: Map<string, SectionTrafficAlert> = this._sectionTrafficAlertsMap.has(hostname)
+      ? this._sectionTrafficAlertsMap.get(hostname)!
+      : new Map();
+    hostSectionTrafficMap.set(section, alert);
+    this._sectionTrafficAlertsMap.set(hostname, hostSectionTrafficMap);
   };
 
   private _deleteAlertFor(hostname: string, section: string) {
