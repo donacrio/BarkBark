@@ -16,7 +16,32 @@ export const basicConfig: BarkBarkConfig = {
   },
   alertsManager: {
     refreshTime: 100,
-    alerts: [{ aggregator: { name: AggregatorName.TRAFFIC, timeframe: 120 }, threshold: 8 }]
+    alerts: [
+      { aggregator: { name: AggregatorName.TRAFFIC, timeframe: 30 }, threshold: 7 },
+      { aggregator: { name: AggregatorName.SECTIONS, timeframe: 30 }, threshold: 5 }
+    ]
+  },
+  ui: {
+    refreshTime: 1000
+  }
+};
+
+export const requestedConfig: BarkBarkConfig = {
+  parser: {
+    refreshTime: 10,
+    queueSize: 10000,
+    logfile: path.join(__dirname, '..', 'data', 'sample.csv')
+  },
+  aggregatorManager: {
+    refreshTime: 100,
+    aggregators: [
+      { name: AggregatorName.TRAFFIC, timeframe: 10 },
+      { name: AggregatorName.SECTIONS, timeframe: 10 }
+    ]
+  },
+  alertsManager: {
+    refreshTime: 100,
+    alerts: [{ aggregator: { name: AggregatorName.TRAFFIC, timeframe: 120 }, threshold: 10 }]
   },
   ui: {
     refreshTime: 1000
