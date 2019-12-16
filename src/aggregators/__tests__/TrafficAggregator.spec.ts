@@ -11,14 +11,14 @@ describe('Test TrafficAggregator.ts', () => {
 
   beforeEach(() => {
     logQueue = new LogQueue(1000);
-    trafficAggregator = new TrafficAggregator(logQueue, 10000);
-    for (let i = 0; i < N_REQUESTS_PER_HOST; i++) {
+    trafficAggregator = new TrafficAggregator(logQueue, 10);
+    for (let i = 0; i < N_REQUESTS_PER_HOST + 1; i++) {
       for (const host of FAKE_HOSTS) {
         logQueue.enqueue({
           remotehost: host,
           rfc931: '-',
           authuser: 'apache',
-          date: 100 * i,
+          date: Math.round(0.1 * i),
           request: 'fake request',
           status: 200,
           bytes: 0
@@ -32,7 +32,8 @@ describe('Test TrafficAggregator.ts', () => {
     const trafficMap = trafficAggregator.computeTrafficMap(logs);
     for (const host of FAKE_HOSTS) {
       expect(trafficMap.has(host)).toBeTruthy();
-      expect(Math.round(trafficMap.get(host)!)).toEqual(10);
+      expect(Math.round(trafficMap.get(host)!.value)).toEqual(10);
+      expect(trafficMap.get(host)!.date).toEqual(20);
     }
   });
   it('should compute without any error', () => {

@@ -1,7 +1,6 @@
 import { Log } from '@barkbark/types';
 import LineByLine from 'n-readlines';
-
-import { LogQueue } from './LogQueue';
+import { LogQueue } from '@barkbark/LogQueue';
 
 const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)",(?<date>\d*),"(?<request>.*)",(?<status>\d*),(?<bytes>\d*)$/g;
 
@@ -40,7 +39,7 @@ export class Parser {
       match.groups['status'] &&
       match.groups['bytes']
     ) {
-      const date = Number.parseInt(match.groups['date']);
+      const date = Number.parseInt(match.groups['date']); // We convert seconds into ms
       const status = Number.parseInt(match.groups['status']);
       const bytes = Number.parseInt(match.groups['bytes']);
 

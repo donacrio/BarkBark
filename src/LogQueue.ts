@@ -1,5 +1,5 @@
-import { Queue } from './lib/Queue';
-import { Log } from './types';
+import { Queue } from '@barkbark/lib';
+import { Log } from '@barkbark/types';
 
 export class LogQueue extends Queue<Log> {
   private newestDate: number;
