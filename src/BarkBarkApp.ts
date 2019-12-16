@@ -1,6 +1,5 @@
-import { Parser } from '@barkbark/Parser';
-import { LogQueue } from '@barkbark/LogQueue';
-import { AggregatorManager, AggregatorName, Aggregator } from '@barkbark/aggregators';
+import { LogQueue, Parser } from '@barkbark/parser';
+import { AggregatorManager } from '@barkbark/aggregators';
 import { AlerManager } from '@barkbark/alerts';
 import { BarkBarkUI } from '@barkbark/ui';
 import { BarkBarkConfig } from '@barkbark/lib';
@@ -28,7 +27,7 @@ export class BarkBarkApp {
         )
       );
       config.alertsManager.alerts.forEach(alertConfig => {
-        const aggregator: Aggregator = this._aggregatorManager.getAggregator(
+        const aggregator = this._aggregatorManager.getAggregator(
           alertConfig.aggregator.name,
           alertConfig.aggregator.timeframe
         );

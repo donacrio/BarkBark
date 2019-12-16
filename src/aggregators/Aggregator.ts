@@ -1,7 +1,13 @@
-import { LogQueue } from '@barkbark/LogQueue';
+import { LogQueue } from '@barkbark/parser/LogQueue';
 
 import { AggregatorName, AggregatorUnit } from '../lib/types';
 
+/**
+ * Aggregator abstract class.
+ *
+ * This class is used to compute a specific metric over the Aggregator timeframe
+ * for every encountered hostname.
+ */
 export abstract class Aggregator {
   protected _name: AggregatorName;
   protected _logQueue: LogQueue;
@@ -15,7 +21,21 @@ export abstract class Aggregator {
     this._unit = unit;
   }
 
+  /**
+   * Compute a metric for every hostname,
+   * over logs in the Aggregator queue,
+   * over the Aggregator timeframe.
+   *
+   * The metric depends of the class extending Aggregator abstract class
+   */
   public abstract compute(): void;
+
+  /**
+   * Return a Map mapping every hostname with its metric value.
+   *
+   * The metric  value is formated as a string to be printable and displayable in the UI.
+   * @returns printable metrics map
+   */
   public abstract getPrintableMetricsMap(): Map<string, string>;
 
   public getName = (): AggregatorName => this._name;

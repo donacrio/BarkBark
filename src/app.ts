@@ -1,6 +1,5 @@
 import 'module-alias/register';
 
-import path from 'path';
 import { BarkBarkApp } from '@barkbark/BarkBarkApp';
 import { basicConfig } from '@barkbark/config';
 

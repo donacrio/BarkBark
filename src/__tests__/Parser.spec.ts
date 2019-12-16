@@ -1,6 +1,5 @@
 import path from 'path';
-import { Parser } from '@barkbark/Parser';
-import { LogQueue } from '@barkbark/LogQueue';
+import { LogQueue, Parser } from '@barkbark/parser';
 
 const SAMPLE_TEST_FILEPATH = path.join(__dirname, 'sample_test.csv');
 const SAMPLE_TEST_MALFORMED_FILEPATH = path.join(__dirname, 'sample_test_malformed.csv');

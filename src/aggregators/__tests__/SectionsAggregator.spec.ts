@@ -1,4 +1,4 @@
-import { LogQueue } from '@barkbark/LogQueue';
+import { LogQueue } from '@barkbark/parser/LogQueue';
 
 import { SectionTrafficAggregator } from '../SectionTrafficAggregator';
 

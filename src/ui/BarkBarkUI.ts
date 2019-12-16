@@ -60,7 +60,7 @@ export class BarkBarkUI {
   };
 
   public setAlerts = (alerts: string[]): void => {
-    this._alertsLogger.setContent('');
+    this._alertsLogger.setContent(''); // We reset the alert logger content
     alerts.forEach(alert => this._alertsLogger.log(alert));
   };
 

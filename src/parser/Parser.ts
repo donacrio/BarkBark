@@ -1,9 +1,15 @@
 import LineByLine from 'n-readlines';
 import { Log } from '@barkbark/lib';
-import { LogQueue } from '@barkbark/LogQueue';
+import { LogQueue } from '@barkbark/parser/LogQueue';
 
+/** Regular expression used to extract the information from a log line */
 const REGEX_PATTERN = /^"(?<remotehost>\S*)","(?<rfc931>\S*)","(?<authuser>\S*)",(?<date>\d*),"(?<request>.*)",(?<status>\d*),(?<bytes>\d*)$/g;
 
+/**
+ * Parser to read a log file.
+ *
+ * The logs are stored in a LogQueue instance.
+ */
 export class Parser {
   private _liner: LineByLine;
   private _logQueue: LogQueue;
@@ -27,6 +33,12 @@ export class Parser {
 
   public getRefreshTime = (): number => this._refreshTime;
 
+  /**
+   * Parse a given log line.
+   *
+   * @param line the given log line
+   * @returns a Log type object containing the logs | null if the log line cannot be parsed
+   */
   private _parseLine = (line: string): Log | null => {
     // We need to reset the regex because it is defined locally
     // Otherwise on 2 consecutives exec, the regex will return null on the second run before reseting
@@ -43,7 +55,7 @@ export class Parser {
       match.groups['status'] &&
       match.groups['bytes']
     ) {
-      const date = Number.parseInt(match.groups['date']); // We convert seconds into ms
+      const date = Number.parseInt(match.groups['date']);
       const status = Number.parseInt(match.groups['status']);
       const bytes = Number.parseInt(match.groups['bytes']);
 

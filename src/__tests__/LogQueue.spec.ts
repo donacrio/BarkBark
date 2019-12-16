@@ -1,5 +1,5 @@
 import { Log } from '@barkbark/lib';
-import { LogQueue } from '@barkbark/LogQueue';
+import { LogQueue } from '@barkbark/parser/LogQueue';
 
 describe('Test LogQueue.ts', () => {
   let logs: Log[];
