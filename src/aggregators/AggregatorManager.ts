@@ -10,10 +10,12 @@ import { AggregatorName } from '../lib/types';
 export class AggregatorManager {
   private _logQueue: LogQueue;
   private _aggregators: Aggregator[];
+  private _refreshTime: number;
 
-  constructor(logQueue: LogQueue) {
+  constructor(logQueue: LogQueue, refreshTime: number) {
     this._logQueue = logQueue;
     this._aggregators = [];
+    this._refreshTime = refreshTime;
   }
 
   public compute = (): void => {
@@ -44,6 +46,8 @@ export class AggregatorManager {
     }
     return printableMetrics;
   };
+
+  public getRefreshTime = (): number => this._refreshTime;
 
   private _getPrintableMetricsMap = (): Map<string, string[]> => {
     const printableMetricsMap = new Map<string, string[]>();

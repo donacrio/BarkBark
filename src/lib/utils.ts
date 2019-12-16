@@ -25,3 +25,11 @@ export const formatAggregator = (aggregator: Aggregator): string => {
     .getName()
     .valueOf()} (${aggregator.getUnit().valueOf()}) for the past ${aggregator.getTimeframe()}s`;
 };
+
+export const colorTextInRed = (text: string) => {
+  return `{red-fg}${text}{/red-fg}`;
+};
+
+export const colorTextInGreen = (text: string) => {
+  return `{green-fg}${text}{/green-fg}`;
+};

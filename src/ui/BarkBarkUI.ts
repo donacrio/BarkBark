@@ -32,11 +32,13 @@ export class BarkBarkUI {
   private _screen: blessed.Widgets.Screen;
   private _metricsTable: blessed.Widgets.TableElement;
   private _alertsLogger: blessed.Widgets.Log;
+  private _refreshTime: number;
 
-  constructor() {
+  constructor(refreshTime: number) {
     this._screen = blessed.screen(screenOpt);
     this._metricsTable = blessed.table(metricsTableOpts);
     this._alertsLogger = blessed.log(alertsLoggerOpts);
+    this._refreshTime = refreshTime;
 
     this._screen.append(this._metricsTable);
     this._screen.append(this._alertsLogger);
@@ -58,4 +60,6 @@ export class BarkBarkUI {
     this._alertsLogger.setContent('');
     alerts.forEach(alert => this._alertsLogger.log(alert));
   };
+
+  public getRefreshTime = (): number => this._refreshTime;
 }

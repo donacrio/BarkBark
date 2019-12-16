@@ -16,3 +16,31 @@ export enum AggregatorName {
 export enum AggregatorUnit {
   HIT_PER_SEC = 'hit/s'
 }
+
+export type BarkBarkConfig = {
+  parser: {
+    refreshTime: number;
+    queueSize: number;
+    logfile: string;
+  };
+  ui: {
+    refreshTime: number;
+  };
+  aggregatorManager: {
+    refreshTime: number;
+    aggregators: {
+      name: AggregatorName;
+      timeframe: number;
+    }[];
+  };
+  alertsManager: {
+    refreshTime: number;
+    alerts: {
+      aggregator: {
+        name: AggregatorName;
+        timeframe: number;
+      };
+      threshold: number;
+    }[];
+  };
+};

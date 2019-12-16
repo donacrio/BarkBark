@@ -5,12 +5,14 @@ import { TrafficAlertHandler } from './TrafficAlertHandler';
 import { SectionTrafficAlertHandler } from './SectionTrafficAlertHandler';
 
 export class AlerManager {
-  public _alertHandlers: AlertHandler[];
+  private _alertHandlers: AlertHandler[];
   private _printableAlerts: string[];
+  private _refreshTime: number;
 
-  constructor() {
+  constructor(refreshTime: number) {
     this._alertHandlers = [];
     this._printableAlerts = [];
+    this._refreshTime = refreshTime;
   }
 
   public compute = (): void => {
@@ -29,6 +31,8 @@ export class AlerManager {
   }
 
   public getPrintableAlerts = (): string[] => this._printableAlerts;
+
+  public getRefreshTime = (): number => this._refreshTime;
 
   private _getAlertHandler(aggregator: Aggregator, threshold: number) {
     switch (aggregator.getName()) {

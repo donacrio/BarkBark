@@ -1,5 +1,10 @@
 import { TrafficAggregator, Traffic } from '@barkbark/aggregators';
-import { formatUnixTimeInSecToPrintableDate, formatHitsPerSecond } from '@barkbark/lib';
+import {
+  formatUnixTimeInSecToPrintableDate,
+  formatHitsPerSecond,
+  colorTextInRed,
+  colorTextInGreen
+} from '@barkbark/lib';
 
 import { AlertHandler } from './AlertHandler';
 
@@ -27,16 +32,20 @@ export class TrafficAlertHandler extends AlertHandler {
         const alert: TrafficAlert = { hostname, value: traffic.value, date: traffic.date };
         this._setAlertFor(hostname, alert);
         printableAlerts.push(
-          `High traffic on ${alert.hostname} generated an alert - hits = ${formatHitsPerSecond(
-            alert.value
-          )}, triggered at ${formatUnixTimeInSecToPrintableDate(alert.date)}`
+          colorTextInRed(
+            `High traffic on ${alert.hostname} generated an alert - hits = ${formatHitsPerSecond(
+              alert.value
+            )}, triggered at ${formatUnixTimeInSecToPrintableDate(alert.date)}`
+          )
         );
       } else if (traffic.value <= this._threshold && this._hasAlertFor(hostname)) {
         this._deleteAlertFor(hostname);
         printableAlerts.push(
-          `Traffic is back to normal on ${hostname} - hits = ${formatHitsPerSecond(
-            traffic.value
-          )}, recovered at ${formatUnixTimeInSecToPrintableDate(traffic.date)}`
+          colorTextInGreen(
+            `Traffic is back to normal on ${hostname} - hits = ${formatHitsPerSecond(
+              traffic.value
+            )}, recovered at ${formatUnixTimeInSecToPrintableDate(traffic.date)}`
+          )
         );
       }
     }

@@ -14,20 +14,20 @@ describe('Test Parser.ts', () => {
   });
 
   it('should read the next line', () => {
-    parser = new Parser(SAMPLE_TEST_FILEPATH, logQueue);
+    parser = new Parser(SAMPLE_TEST_FILEPATH, logQueue, 1);
     parser.readLine();
     expect(logQueue.getLastElements(10).length).toEqual(1);
   });
 
   it('should read contigous lines line', () => {
-    parser = new Parser(SAMPLE_TEST_FILEPATH, logQueue);
+    parser = new Parser(SAMPLE_TEST_FILEPATH, logQueue, 1);
     parser.readLine();
     parser.readLine();
     expect(logQueue.getLastElements(10).length).toEqual(2);
   });
 
   it('should read only correct lines', () => {
-    parser = new Parser(SAMPLE_TEST_MALFORMED_FILEPATH, logQueue);
+    parser = new Parser(SAMPLE_TEST_MALFORMED_FILEPATH, logQueue, 1);
     for (let i = 0; i < 10; i++) {
       parser.readLine();
     }
