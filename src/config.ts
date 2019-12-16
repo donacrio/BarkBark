@@ -22,3 +22,25 @@ export const basicConfig: BarkBarkConfig = {
     refreshTime: 1000
   }
 };
+
+export const testConfig: BarkBarkConfig = {
+  parser: {
+    refreshTime: 1,
+    queueSize: 1000,
+    logfile: path.join(__dirname, '..', 'data', 'sample.csv')
+  },
+  aggregatorManager: {
+    refreshTime: 10,
+    aggregators: [
+      { name: AggregatorName.TRAFFIC, timeframe: 1 },
+      { name: AggregatorName.SECTIONS, timeframe: 1 }
+    ]
+  },
+  alertsManager: {
+    refreshTime: 10,
+    alerts: [{ aggregator: { name: AggregatorName.TRAFFIC, timeframe: 12 }, threshold: 8 }]
+  },
+  ui: {
+    refreshTime: 100
+  }
+};

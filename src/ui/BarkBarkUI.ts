@@ -45,11 +45,14 @@ export class BarkBarkUI {
     this._screen.key(['escape', 'q', 'C-c'], function(ch, key) {
       return process.exit(0);
     });
-    this._screen.render();
   }
 
   public render = (): void => {
     this._screen.render();
+  };
+
+  public destroy = (): void => {
+    this._screen.destroy();
   };
 
   public setMetricsTableData = (data: string[][]): void => {
