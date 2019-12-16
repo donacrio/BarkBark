@@ -1,3 +1,9 @@
+/**
+ * Custom queue implementation.
+ *
+ * When full, the first item is removed before adding a new one.
+ * @template T the type of the elements to be stored in the queue.
+ */
 export class Queue<T> {
   protected _capacity: number;
   protected _size: number;

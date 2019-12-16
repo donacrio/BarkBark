@@ -5,15 +5,7 @@ export const formatUniximeToSec = (time: number): number => {
 };
 
 export const formatUnixTimeInSecToPrintableDate = (timeInSec: number): string => {
-  const unixTime = new Date(timeInSec * 1000).toLocaleString('en-US', { timeZone: 'America/New_York' });
-  const datetime = new Date(unixTime);
-  const year = datetime.getFullYear();
-  const month = datetime.getMonth();
-  const date = datetime.getDate();
-  const hour = datetime.getHours();
-  const min = datetime.getMinutes();
-  const sec = datetime.getSeconds();
-  return `${year}-${month}-${date}:${hour}:${min}:${sec}`;
+  return new Date(timeInSec * 1000).toString();
 };
 
 export const formatHitsPerSecond = (hits: number): string => {
