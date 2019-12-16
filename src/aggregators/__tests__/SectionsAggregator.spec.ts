@@ -11,14 +11,14 @@ describe('Test SectionsAggregator.ts', () => {
 
   beforeEach(() => {
     logQueue = new LogQueue(1000);
-    sectionsAggregator = new SectionTrafficAggregator(logQueue, 10000);
-    for (let i = 0; i < N_REQUESTS_PER_HOST; i++) {
+    sectionsAggregator = new SectionTrafficAggregator(logQueue, 10);
+    for (let i = 0; i < N_REQUESTS_PER_HOST + 1; i++) {
       for (const section of FAKE_SECTIONS) {
         logQueue.enqueue({
           remotehost: 'host',
           rfc931: '-',
           authuser: 'apache',
-          date: 100 * i,
+          date: Math.round(0.1 * i),
           request: `GET ${section} HTTP/1.0`,
           status: 200,
           bytes: 0
@@ -33,11 +33,11 @@ describe('Test SectionsAggregator.ts', () => {
     expect(sectionsMap.has('host')).toBeTruthy();
     const hostSectionsMap = sectionsMap.get('host')!;
     expect(hostSectionsMap.has('api')).toBeTruthy();
-    expect(Math.round(hostSectionsMap.get('api')!.value)).toEqual(N_REQUESTS_PER_HOST / 10);
-    expect(hostSectionsMap.get('api')!.date).toEqual((N_REQUESTS_PER_HOST - 1) * 100);
+    expect(Math.round(hostSectionsMap.get('api')!.value)).toEqual(19);
+    expect(hostSectionsMap.get('api')!.date).toEqual(20);
     expect(hostSectionsMap.has('report')).toBeTruthy();
-    expect(Math.round(hostSectionsMap.get('report')!.value)).toEqual(N_REQUESTS_PER_HOST / 20);
-    expect(hostSectionsMap.get('report')!.date).toEqual((N_REQUESTS_PER_HOST - 1) * 100);
+    expect(Math.round(hostSectionsMap.get('report')!.value)).toEqual(10);
+    expect(hostSectionsMap.get('report')!.date).toEqual(20);
   });
 
   it('should not take malformed request into account', () => {

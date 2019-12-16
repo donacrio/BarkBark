@@ -1,4 +1,4 @@
-import { formatUnixTimeToDate, formatUniximeToSec } from './utils';
+import { formatUnixTimeInSecToPrintableDate, formatUniximeToSec, formatHitsPerSecond } from './utils';
 import { Queue } from './Queue';
 
-export { formatUniximeToSec, formatUnixTimeToDate, Queue };
+export { formatUniximeToSec, formatUnixTimeInSecToPrintableDate, formatHitsPerSecond, Queue };

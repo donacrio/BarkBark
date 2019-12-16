@@ -18,16 +18,11 @@ export class AggregatorManager {
     this._aggregators.forEach(aggregator => aggregator.compute());
   };
 
-  public addAggregator = (aggregatorName: AggregatorName, timeframe: number): void => {
-    try {
-      const aggregator: Aggregator = this._getAggregator(aggregatorName, timeframe);
-      this._aggregators.push(aggregator);
-    } catch (e) {
-      console.log(`Could not add aggregator ${aggregatorName}:\n${e.message}`);
-    }
+  public addAggregator = (aggregator: Aggregator): void => {
+    this._aggregators.push(aggregator);
   };
 
-  private _getAggregator = (aggregatorName: AggregatorName, timeframe: number): Aggregator => {
+  public getAggregator = (aggregatorName: AggregatorName, timeframe: number): Aggregator => {
     switch (aggregatorName) {
       case AggregatorName.SECTIONS:
         return new SectionTrafficAggregator(this._logQueue, timeframe);

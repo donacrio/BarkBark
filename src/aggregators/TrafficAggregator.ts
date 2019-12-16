@@ -29,7 +29,7 @@ export class TrafficAggregator extends Aggregator {
         ? trafficMap.get(log.remotehost)!
         : { value: 0, date: 0 };
       trafficMap.set(log.remotehost, {
-        value: trafficForHost.value + 1000 / this._timeframe,
+        value: trafficForHost.value + 1 / this._timeframe,
         date: Math.max(trafficForHost.date, log.date)
       });
     }

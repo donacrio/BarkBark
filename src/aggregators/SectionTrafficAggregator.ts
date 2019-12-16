@@ -22,6 +22,7 @@ export class SectionTrafficAggregator extends Aggregator {
   compute = (): void => {
     const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
     this._sectionTrafficMap = this.computeSectionTrafficMap(logs);
+    console.log(this._sectionTrafficMap);
   };
 
   computeSectionTrafficMap = (logs: Log[]): Map<string, Map<string, SectionTraffic>> => {
@@ -36,7 +37,7 @@ export class SectionTrafficAggregator extends Aggregator {
           ? hostSectionTrafficMap.get(section)!
           : { value: 0, date: 0 };
         hostSectionTrafficMap.set(section, {
-          value: hostSectionTraffic.value + 1000 / this._timeframe,
+          value: hostSectionTraffic.value + 1 / this._timeframe,
           date: Math.max(hostSectionTraffic.date, log.date)
         });
         sectionTrafficMap.set(log.remotehost, hostSectionTrafficMap);

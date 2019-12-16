@@ -1,8 +1,8 @@
-import { AlertHandler } from './AlertHandler';
 import { SectionsAggregator } from '@barkbark/aggregators';
-import { formatUnixTimeToDate } from '@barkbark/lib';
+import { formatUnixTimeInSecToPrintableDate, formatHitsPerSecond } from '@barkbark/lib';
 import { SectionTraffic, SectionTrafficAggregator } from '@barkbark/aggregators/SectionTrafficAggregator';
-import { hostname } from 'os';
+
+import { AlertHandler } from './AlertHandler';
 
 export type SectionTrafficAlert = {
   hostname: string;
@@ -28,6 +28,7 @@ export class SectionsAlertHandler extends AlertHandler {
       const hostSectionTrafficMap: Map<string, SectionTraffic> = sectionTrafficMap.get(hostname)!;
       for (const section of hostSectionTrafficMap.keys()) {
         const sectionTraffic: SectionTraffic = hostSectionTrafficMap.get(section)!;
+
         if (sectionTraffic.value > this._threshold && !this._hasAlertFor(hostname, section)) {
           const alert: SectionTrafficAlert = {
             hostname,
@@ -37,21 +38,21 @@ export class SectionsAlertHandler extends AlertHandler {
           };
           this._setAlertFor(hostname, section, alert);
           printableAlerts.push(
-            `High traffic on ${alert.hostname}/${alert.section} generated an alert - hits = ${
+            `High traffic on ${alert.hostname}/${alert.section} generated an alert - hits = ${formatHitsPerSecond(
               alert.value
-            }, triggered at ${formatUnixTimeToDate(alert.date)}`
+            )}, triggered at ${formatUnixTimeInSecToPrintableDate(alert.date)}`
           );
         } else if (sectionTraffic.value <= this._threshold && this._hasAlertFor(hostname, section)) {
-          const alert: SectionTrafficAlert = this._getAlertFor(hostname, section)!;
           this._deleteAlertFor(hostname, section);
           printableAlerts.push(
-            `Traffic is back to normal on ${alert.hostname} - hits = ${
-              alert.value
-            }, recovered at ${formatUnixTimeToDate(alert.date)}`
+            `Traffic is back to normal on ${hostname} /${section} - hits = ${formatHitsPerSecond(
+              sectionTraffic.value
+            )}, recovered at ${formatUnixTimeInSecToPrintableDate(sectionTraffic.date)}`
           );
         }
       }
     }
+
     return printableAlerts;
   };
 

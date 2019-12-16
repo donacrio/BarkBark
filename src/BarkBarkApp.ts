@@ -15,12 +15,22 @@ export class BarkBarkApp {
     this._parser = new Parser(filepath, this._logsQueue);
     this._aggregatorManager = new AggregatorManager(this._logsQueue);
     this._alertManager = new AlerManager();
-    this._aggregatorManager.addAggregator(AggregatorName.TRAFFIC, 10000);
-    this._aggregatorManager.addAggregator(AggregatorName.SECTIONS, 10000);
+    try {
+      const trafficAggregator = this._aggregatorManager.getAggregator(AggregatorName.TRAFFIC, 30);
+      this._aggregatorManager.addAggregator(trafficAggregator);
+      this._alertManager.addAlertHandlerForAggregator(trafficAggregator, 5);
+    } catch (e) {
+      console.log(`Could not add aggregators:\n${e.message}`);
+      this._aggregatorManager = new AggregatorManager(this._logsQueue);
+    }
   }
 
   run() {
     setInterval(() => this._parser.readLine(), 1);
-    setInterval(() => this._aggregatorManager.compute(), 1000);
+    setInterval(() => this._aggregatorManager.compute(), 1);
+    setInterval(() => {
+      this._alertManager.compute();
+      console.log(this._alertManager.getPrintableAlerts());
+    }, 2);
   }
 }

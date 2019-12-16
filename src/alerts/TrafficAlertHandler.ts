@@ -1,7 +1,8 @@
-import { AlertHandler } from './AlertHandler';
 import { TrafficAggregator } from '@barkbark/aggregators';
-import { formatUnixTimeToDate } from '@barkbark/lib';
+import { formatUnixTimeInSecToPrintableDate, formatHitsPerSecond } from '@barkbark/lib';
 import { Traffic } from '@barkbark/aggregators';
+
+import { AlertHandler } from './AlertHandler';
 
 export type TrafficAlert = {
   hostname: string;
@@ -27,17 +28,16 @@ export class TrafficAlertHandler extends AlertHandler {
         const alert: TrafficAlert = { hostname, value: traffic.value, date: traffic.date };
         this._addAlertFor(hostname, alert);
         printableAlerts.push(
-          `High traffic on ${alert.hostname} generated an alert - hits = ${
+          `High traffic on ${alert.hostname} generated an alert - hits = ${formatHitsPerSecond(
             alert.value
-          }, triggered at ${formatUnixTimeToDate(alert.date)}`
+          )}, triggered at ${formatUnixTimeInSecToPrintableDate(alert.date)}`
         );
       } else if (traffic.value <= this._threshold && this._hasAlertFor(hostname)) {
-        const alert: TrafficAlert = this._trafficAlertsMap.get(hostname)!;
         this._deleteAlertFor(hostname);
         printableAlerts.push(
-          `Traffic is back to normal on ${alert.hostname} - hits = ${alert.value}, recovered at ${formatUnixTimeToDate(
-            alert.date
-          )}`
+          `Traffic is back to normal on ${hostname} - hits = ${formatHitsPerSecond(
+            traffic.value
+          )}, recovered at ${formatUnixTimeInSecToPrintableDate(traffic.date)}`
         );
       }
     }
@@ -45,6 +45,10 @@ export class TrafficAlertHandler extends AlertHandler {
   };
 
   private _hasAlertFor = (hostname: string): boolean => this._trafficAlertsMap.has(hostname);
+
+  private getAlertFor = (hostname: string): TrafficAlert | undefined => {
+    return this._trafficAlertsMap.get(hostname);
+  };
 
   private _addAlertFor = (hostname: string, alert: TrafficAlert): void => {
     this._trafficAlertsMap.set(hostname, alert);
