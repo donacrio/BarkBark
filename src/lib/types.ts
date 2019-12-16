@@ -12,3 +12,7 @@ export enum AggregatorName {
   SECTIONS = 'sections traffic',
   TRAFFIC = 'traffic'
 }
+
+export enum AggregatorUnit {
+  HIT_PER_SEC = 'hit/s'
+}

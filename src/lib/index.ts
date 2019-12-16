@@ -1,6 +1,6 @@
 import { formatUnixTimeInSecToPrintableDate, formatUniximeToSec, formatHitsPerSecond, formatAggregator } from './utils';
 import { Queue } from './Queue';
-import { Log, AggregatorName } from './types';
+import { Log, AggregatorName, AggregatorUnit } from './types';
 
 export {
   formatUniximeToSec,
@@ -9,5 +9,6 @@ export {
   formatAggregator,
   Queue,
   Log,
-  AggregatorName
+  AggregatorName,
+  AggregatorUnit
 };

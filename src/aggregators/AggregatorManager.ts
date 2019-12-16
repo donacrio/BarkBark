@@ -39,7 +39,7 @@ export class AggregatorManager {
     const headers: string[] = ['hostname', ...this._aggregators.map(aggregator => formatAggregator(aggregator))];
     const printableMetrics: string[][] = [headers];
     const printableMetricsMap = this._getPrintableMetricsMap();
-    for (const hostname of printableMetricsMap.keys()) {
+    for (const hostname of Array.from(printableMetricsMap.keys()).sort()) {
       printableMetrics.push([hostname, ...printableMetricsMap.get(hostname)!]);
     }
     return printableMetrics;

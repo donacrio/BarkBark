@@ -17,9 +17,11 @@ export const formatUnixTimeInSecToPrintableDate = (timeInSec: number): string =>
 };
 
 export const formatHitsPerSecond = (hits: number): string => {
-  return `${Math.round(hits * 100) / 100} hits/second`;
+  return `${Math.round(hits * 100) / 100}`;
 };
 
 export const formatAggregator = (aggregator: Aggregator): string => {
-  return `${aggregator.getName().valueOf()} (${aggregator.getTimeframe()}s)`;
+  return `${aggregator
+    .getName()
+    .valueOf()} (${aggregator.getUnit().valueOf()}) for the past ${aggregator.getTimeframe()}s`;
 };

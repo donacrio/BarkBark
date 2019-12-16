@@ -1,5 +1,5 @@
 import { LogQueue } from '@barkbark/LogQueue';
-import { formatHitsPerSecond, Log, AggregatorName } from '@barkbark/lib';
+import { formatHitsPerSecond, Log, AggregatorName, AggregatorUnit } from '@barkbark/lib';
 
 import { Aggregator } from './Aggregator';
 
@@ -14,7 +14,7 @@ export class SectionTrafficAggregator extends Aggregator {
   private _sectionTrafficMap: Map<string, Map<string, SectionTraffic>>;
 
   constructor(logQueue: LogQueue, timeframe: number) {
-    super(AggregatorName.SECTIONS, logQueue, timeframe);
+    super(AggregatorName.SECTIONS, logQueue, timeframe, AggregatorUnit.HIT_PER_SEC);
     this._sectionTrafficMap = new Map();
   }
 
@@ -32,7 +32,7 @@ export class SectionTrafficAggregator extends Aggregator {
         const sectionTraffic: SectionTraffic = sectionTrafficMap.get(section)!;
         printableMetrics.push(`/${section}: ${formatHitsPerSecond(sectionTraffic.value)}`);
       }
-      printableMetricsMap.set(hostname, printableMetrics.join(' || '));
+      printableMetricsMap.set(hostname, printableMetrics.sort().join('  '));
     }
     return printableMetricsMap;
   };

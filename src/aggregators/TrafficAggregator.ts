@@ -1,5 +1,5 @@
 import { LogQueue } from '@barkbark/LogQueue';
-import { formatHitsPerSecond, Log, AggregatorName } from '@barkbark/lib';
+import { formatHitsPerSecond, Log, AggregatorName, AggregatorUnit } from '@barkbark/lib';
 
 import { Aggregator } from './Aggregator';
 
@@ -12,7 +12,7 @@ export class TrafficAggregator extends Aggregator {
   private _trafficMap: Map<string, Traffic>;
 
   constructor(logQueue: LogQueue, timeframe: number) {
-    super(AggregatorName.TRAFFIC, logQueue, timeframe);
+    super(AggregatorName.TRAFFIC, logQueue, timeframe, AggregatorUnit.HIT_PER_SEC);
     this._trafficMap = new Map();
   }
 
