@@ -4,6 +4,7 @@ import { Metric, MetricName } from '@barkbark/lib';
 import { Aggregator } from './Aggregator';
 import { TrafficAggregator } from './TrafficAggregator';
 import { SectionTrafficAggregator } from './SectionTrafficAggregator';
+import { ResponseCodeAggregator } from './ResponseCodeAggregator';
 
 /**
  * Main class containing the logic for metric computing.
@@ -24,6 +25,9 @@ export class AggregatorManager {
     this._refreshTime = refreshTime;
   }
 
+  /**
+   * Call the compute method of every aggregator to compute the metrics.
+   */
   public compute = (): void => {
     this._aggregators.forEach(aggregator => aggregator.compute());
   };
@@ -45,6 +49,8 @@ export class AggregatorManager {
         return new SectionTrafficAggregator(this._logQueue, timeframe);
       case MetricName.TRAFFIC:
         return new TrafficAggregator(this._logQueue, timeframe);
+      case MetricName.RESPONSE_CODES:
+        return new ResponseCodeAggregator(this._logQueue, timeframe);
       default:
         throw new Error(`Aggregator ${metricName} not yet implemented`);
     }

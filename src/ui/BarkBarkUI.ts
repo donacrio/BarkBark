@@ -1,23 +1,16 @@
 import blessed from 'blessed';
-import {
-  Metric,
-  TrafficMetricValue,
-  SectionTrafficMetricValue,
-  SectionTrafficAlert,
-  TrafficAlert,
-  Alert
-} from '@barkbark/lib';
+import { Metric, SectionTrafficAlert, TrafficAlert, Alert } from '@barkbark/lib';
+
 import {
   formatMetricName,
-  isTrafficMetricValue,
-  formatTrafficMetricValue,
-  formatSectionTrafficMetricValue,
   isTrafficAlert,
   formatTrafficAlert,
   formatSectionTrafficAlert,
-  formatTrafficMetricUpdateDate,
-  formatSectionTrafficMetricUpdateDate
+  formatMetricValue,
+  formatMetricUpdateDate
 } from './utils';
+
+//---------- WIDGET OPTIONS ----------
 
 const screenOpt: blessed.Widgets.IScreenOptions = {
   smartCSR: true,
@@ -48,6 +41,13 @@ const alertsLoggerOpts: blessed.Widgets.LogOptions = {
   }
 };
 
+//---------- END ----------
+
+/**
+ * User interface of the app.
+ *
+ * Metrics and alerts can be set using respectively setMetricsTableData and setAlerts.
+ */
 export class BarkBarkUI {
   private _screen: blessed.Widgets.Screen;
   private _metricsTable: blessed.Widgets.TableElement;
@@ -62,7 +62,7 @@ export class BarkBarkUI {
 
     this._screen.append(this._metricsTable);
     this._screen.append(this._alertsLogger);
-    this._screen.key(['escape', 'q', 'C-c'], function(ch, key) {
+    this._screen.key(['escape', 'q', 'C-c'], function() {
       return process.exit(0);
     });
   }
@@ -75,23 +75,31 @@ export class BarkBarkUI {
     this._screen.destroy();
   };
 
+  /**
+   * Set view of the given metrics.
+   *
+   * @param metrics the given metrics
+   */
   public setMetricsTableData = (metrics: Metric[]): void => {
+    // We sort the metrics for display purpose
     metrics = metrics.sort((a, b) => -a.metricName.localeCompare(b.metricName));
     const data = metrics.map(metric => [
       formatMetricName(metric),
-      isTrafficMetricValue(metric.metricValue)
-        ? formatTrafficMetricValue(metric.metricValue as TrafficMetricValue)
-        : formatSectionTrafficMetricValue(metric.metricValue as SectionTrafficMetricValue),
-      isTrafficMetricValue(metric.metricValue)
-        ? formatTrafficMetricUpdateDate(metric.metricValue as TrafficMetricValue)
-        : formatSectionTrafficMetricUpdateDate(metric.metricValue as SectionTrafficMetricValue)
+      formatMetricValue(metric),
+      formatMetricUpdateDate(metric)
     ]);
+    // We set the headers and the data
     this._metricsTable.setData([
       ['{bold}Metric name{/bold}', '{bold}Metric value{/bold}', '{bold}Metric update date{/bold}'],
       ...data
     ]);
   };
 
+  /**
+   * Log the given new alerts into the alert logger
+   *
+   * @param alert the given alerts
+   */
   public setAlerts = (alerts: Alert[]): void => {
     alerts.forEach(alert =>
       isTrafficAlert(alert)

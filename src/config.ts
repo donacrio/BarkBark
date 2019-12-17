@@ -1,42 +1,62 @@
 import path from 'path';
-import { BarkBarkConfig, MetricName } from '@barkbark/lib';
+import { BarkBarkConfig, MetricName, SimulationType } from '@barkbark/lib';
 
-export const basicConfig: BarkBarkConfig = {
+/**
+ * Configuration described in the requirements of the project.
+ *
+ * Note that if you want to run the simulation forever, the refreshTime of the simulation
+ * needs to be lower than the refreshTime of the parser.
+ */
+export const requestedConfig: BarkBarkConfig = {
+  simulation: {
+    type: SimulationType.RUNNING,
+    refreshTime: 50,
+    running: true,
+    logfile: path.join(__dirname, '..', 'data', 'logs.csv')
+  },
   parser: {
-    refreshTime: 10,
+    refreshTime: 100,
     queueSize: 10000,
     logfile: path.join(__dirname, '..', 'data', 'sample.csv')
   },
   aggregatorManager: {
-    refreshTime: 100,
+    refreshTime: 500,
     aggregators: [
       { metricName: MetricName.TRAFFIC, timeframe: 10 },
-      { metricName: MetricName.SECTIONS, timeframe: 10 }
+      { metricName: MetricName.SECTIONS, timeframe: 10 },
+      { metricName: MetricName.RESPONSE_CODES, timeframe: 10 }
     ]
   },
   alertsManager: {
-    refreshTime: 100,
-    alerts: [
-      { aggregator: { metricName: MetricName.TRAFFIC, timeframe: 30 }, threshold: 7 },
-      { aggregator: { metricName: MetricName.SECTIONS, timeframe: 30 }, threshold: 5 }
-    ]
+    refreshTime: 500,
+    alerts: [{ aggregator: { metricName: MetricName.TRAFFIC, timeframe: 120 }, threshold: 10 }]
   },
   ui: {
     refreshTime: 1000
   }
 };
 
-export const requestedConfig: BarkBarkConfig = {
+/**
+ * Configuration that will test the alerting logic,
+ */
+export const testAlertingLogicConfig: BarkBarkConfig = {
+  simulation: {
+    type: SimulationType.TEST,
+    refreshTime: 10,
+    running: true,
+    logfile: path.join(__dirname, '..', 'data', 'test_alerting.csv')
+  },
   parser: {
     refreshTime: 10,
     queueSize: 10000,
-    logfile: path.join(__dirname, '..', 'data', 'sample.csv')
+    logfile: path.join(__dirname, '..', 'data', 'test_alerting.csv')
   },
   aggregatorManager: {
     refreshTime: 100,
     aggregators: [
       { metricName: MetricName.TRAFFIC, timeframe: 10 },
-      { metricName: MetricName.SECTIONS, timeframe: 10 }
+      { metricName: MetricName.SECTIONS, timeframe: 10 },
+      { metricName: MetricName.RESPONSE_CODES, timeframe: 10 }
     ]
   },
   alertsManager: {
@@ -48,24 +68,39 @@ export const requestedConfig: BarkBarkConfig = {
   }
 };
 
-export const testConfig: BarkBarkConfig = {
+/**
+ * Configuration to run on a file that is not appended.
+ *
+ * The file is the one provided in the requirements.
+ */
+export const noSimulationConfig: BarkBarkConfig = {
+  simulation: {
+    type: SimulationType.STATIC,
+    refreshTime: 100,
+    running: false,
+    logfile: path.join(__dirname, '..', 'data', 'logs.csv')
+  },
   parser: {
-    refreshTime: 1,
-    queueSize: 1000,
+    refreshTime: 100,
+    queueSize: 10000,
     logfile: path.join(__dirname, '..', 'data', 'sample.csv')
   },
   aggregatorManager: {
-    refreshTime: 10,
+    refreshTime: 100,
     aggregators: [
-      { metricName: MetricName.TRAFFIC, timeframe: 1 },
-      { metricName: MetricName.SECTIONS, timeframe: 1 }
+      { metricName: MetricName.TRAFFIC, timeframe: 10 },
+      { metricName: MetricName.SECTIONS, timeframe: 10 },
+      { metricName: MetricName.RESPONSE_CODES, timeframe: 10 }
     ]
   },
   alertsManager: {
-    refreshTime: 10,
-    alerts: [{ aggregator: { metricName: MetricName.TRAFFIC, timeframe: 12 }, threshold: 8 }]
+    refreshTime: 100,
+    alerts: [
+      { aggregator: { metricName: MetricName.TRAFFIC, timeframe: 30 }, threshold: 7 },
+      { aggregator: { metricName: MetricName.SECTIONS, timeframe: 30 }, threshold: 5 }
+    ]
   },
   ui: {
-    refreshTime: 100
+    refreshTime: 1000
   }
 };
