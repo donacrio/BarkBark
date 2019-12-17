@@ -34,6 +34,10 @@ export class AlerManager {
     }
   }
 
+  public clearAlerts = (): void => {
+    this._alerts = [];
+  };
+
   public getAlerts = (): Alert[] => this._alerts;
 
   public getRefreshTime = (): number => this._refreshTime;

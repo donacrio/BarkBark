@@ -49,6 +49,7 @@ export class BarkBarkApp {
       setInterval(() => {
         this._ui.setMetricsTableData(this._aggregatorManager.getAggregatorMetrics());
         this._ui.setAlerts(this._alertManager.getAlerts());
+        this._alertManager.clearAlerts();
         this._ui.render();
       }, this._ui.getRefreshTime())
     );
