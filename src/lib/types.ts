@@ -9,18 +9,20 @@ export type Log = {
 
 export enum MetricName {
   SECTIONS = 'sections traffic',
-  TRAFFIC = 'traffic'
+  TRAFFIC = 'traffic',
+  RESPONSE_CODES = 'response codes'
 }
 
 export enum MetricUnit {
-  HIT_PER_SEC = 'hit/s'
+  HIT_PER_SEC = 'hit/s',
+  NUMBER = 'number'
 }
 
 export type Metric = {
   metricName: MetricName;
   timeframe: number;
   unit: MetricUnit;
-  metricValue: TrafficMetricValue | SectionTrafficMetricValue;
+  metricValue: TrafficMetricValue | SectionTrafficMetricValue | ResponseCodeMetricValue;
 };
 
 export type TrafficMetricValue = {
@@ -29,6 +31,8 @@ export type TrafficMetricValue = {
 };
 
 export type SectionTrafficMetricValue = Map<string, TrafficMetricValue>;
+
+export type ResponseCodeMetricValue = Map<number, TrafficMetricValue>;
 
 export type Alert = TrafficAlert | SectionTrafficAlert;
 

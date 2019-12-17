@@ -9,6 +9,7 @@ import {
   Alert,
   TrafficAlert,
   SectionTrafficAlert,
+  ResponseCodeMetricValue,
   SimulationType,
   BarkBarkConfig
 } from './types';
@@ -21,6 +22,7 @@ export {
   Metric,
   TrafficMetricValue,
   SectionTrafficMetricValue,
+  ResponseCodeMetricValue,
   Alert,
   TrafficAlert,
   SectionTrafficAlert,

@@ -9,7 +9,7 @@ import { Aggregator } from './Aggregator';
  */
 export class TrafficAggregator extends Aggregator {
   /**
-   * Traffic Map mapping every hostname to its TrafficMetric over the Aggregaator timeframe.
+   * TrafficMetric over the Aggregaator timeframe.
    */
   private _metricValue: TrafficMetricValue;
 

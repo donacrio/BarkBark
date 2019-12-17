@@ -1,23 +1,13 @@
 import blessed from 'blessed';
-import {
-  Metric,
-  TrafficMetricValue,
-  SectionTrafficMetricValue,
-  SectionTrafficAlert,
-  TrafficAlert,
-  Alert
-} from '@barkbark/lib';
+import { Metric, SectionTrafficAlert, TrafficAlert, Alert } from '@barkbark/lib';
 
 import {
   formatMetricName,
-  isTrafficMetricValue,
-  formatTrafficMetricValue,
-  formatSectionTrafficMetricValue,
   isTrafficAlert,
   formatTrafficAlert,
   formatSectionTrafficAlert,
-  formatTrafficMetricUpdateDate,
-  formatSectionTrafficMetricUpdateDate
+  formatMetricValue,
+  formatMetricUpdateDate
 } from './utils';
 
 const screenOpt: blessed.Widgets.IScreenOptions = {
@@ -63,7 +53,7 @@ export class BarkBarkUI {
 
     this._screen.append(this._metricsTable);
     this._screen.append(this._alertsLogger);
-    this._screen.key(['escape', 'q', 'C-c'], function(ch, key) {
+    this._screen.key(['escape', 'q', 'C-c'], function() {
       return process.exit(0);
     });
   }
@@ -80,12 +70,8 @@ export class BarkBarkUI {
     metrics = metrics.sort((a, b) => -a.metricName.localeCompare(b.metricName));
     const data = metrics.map(metric => [
       formatMetricName(metric),
-      isTrafficMetricValue(metric.metricValue)
-        ? formatTrafficMetricValue(metric.metricValue as TrafficMetricValue)
-        : formatSectionTrafficMetricValue(metric.metricValue as SectionTrafficMetricValue),
-      isTrafficMetricValue(metric.metricValue)
-        ? formatTrafficMetricUpdateDate(metric.metricValue as TrafficMetricValue)
-        : formatSectionTrafficMetricUpdateDate(metric.metricValue as SectionTrafficMetricValue)
+      formatMetricValue(metric),
+      formatMetricUpdateDate(metric)
     ]);
     this._metricsTable.setData([
       ['{bold}Metric name{/bold}', '{bold}Metric value{/bold}', '{bold}Metric update date{/bold}'],

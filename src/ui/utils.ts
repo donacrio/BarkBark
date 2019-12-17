@@ -3,20 +3,31 @@ import {
   SectionTrafficMetricValue,
   Metric,
   TrafficAlert,
-  SectionTrafficAlert
+  SectionTrafficAlert,
+  ResponseCodeMetricValue,
+  MetricName
 } from '@barkbark/lib';
-
-export const isTrafficMetricValue = (
-  metricValue: TrafficMetricValue | SectionTrafficMetricValue
-): metricValue is TrafficMetricValue => (metricValue as TrafficMetricValue).value != undefined;
 
 export const formatMetricName = (metric: Metric): string =>
   `${metric.metricName.valueOf()} past ${metric.timeframe}s (${metric.unit})`;
 
-export const formatTrafficMetricValue = (metricValue: TrafficMetricValue): string =>
+export const formatMetricValue = (metric: Metric): string => {
+  switch (metric.metricName) {
+    case MetricName.TRAFFIC:
+      return formatTrafficMetricValue(metric.metricValue as TrafficMetricValue);
+    case MetricName.SECTIONS:
+      return formatSectionTrafficMetricValue(metric.metricValue as SectionTrafficMetricValue);
+    case MetricName.RESPONSE_CODES:
+      return formatResponseCodeMetricValue(metric.metricValue as ResponseCodeMetricValue);
+    default:
+      return '';
+  }
+};
+
+const formatTrafficMetricValue = (metricValue: TrafficMetricValue): string =>
   `${Math.round(metricValue.value * 100) / 100}`;
 
-export const formatSectionTrafficMetricValue = (metricValue: SectionTrafficMetricValue): string => {
+const formatSectionTrafficMetricValue = (metricValue: SectionTrafficMetricValue): string => {
   const sections: string[] = [];
   for (const section of Array.from(metricValue.keys()).sort()) {
     sections.push(`/${section}: ${formatTrafficMetricValue(metricValue.get(section)!)}`);
@@ -24,16 +35,46 @@ export const formatSectionTrafficMetricValue = (metricValue: SectionTrafficMetri
   return sections.join(' || ');
 };
 
-export const formatTrafficMetricUpdateDate = (metricValue: TrafficMetricValue): string =>
+const formatResponseCodeMetricValue = (metricValue: ResponseCodeMetricValue): string => {
+  const responseCoeds: string[] = [];
+  for (const responseCode of Array.from(metricValue.keys()).sort()) {
+    responseCoeds.push(`${responseCode}: ${metricValue.get(responseCode)!.value}`);
+  }
+  return responseCoeds.join(' || ');
+};
+
+export const formatMetricUpdateDate = (metric: Metric): string => {
+  switch (metric.metricName) {
+    case MetricName.TRAFFIC:
+      return formatTrafficMetricUpdateDate(metric.metricValue as TrafficMetricValue);
+    case MetricName.SECTIONS:
+      return formatSectionTrafficMetricUpdateDate(metric.metricValue as SectionTrafficMetricValue);
+    case MetricName.RESPONSE_CODES:
+      return formatResponseCodeMetricUpdateDate(metric.metricValue as ResponseCodeMetricValue);
+    default:
+      return '';
+  }
+};
+
+const formatTrafficMetricUpdateDate = (metricValue: TrafficMetricValue): string =>
   `${formatUnixTime(metricValue.date)}`;
 
-export const formatSectionTrafficMetricUpdateDate = (metricValue: SectionTrafficMetricValue): string => {
+const formatSectionTrafficMetricUpdateDate = (metricValue: SectionTrafficMetricValue): string => {
   let maxDate = 0;
   for (const section of metricValue.keys()) {
     maxDate = Math.max(maxDate, metricValue.get(section)!.date);
   }
   return `${formatUnixTime(maxDate)}`;
 };
+
+const formatResponseCodeMetricUpdateDate = (metricValue: ResponseCodeMetricValue): string => {
+  let maxDate = 0;
+  for (const responseCode of metricValue.keys()) {
+    maxDate = Math.max(maxDate, metricValue.get(responseCode)!.date);
+  }
+  return `${formatUnixTime(maxDate)}`;
+};
+
 export const isTrafficAlert = (alert: TrafficAlert | SectionTrafficAlert): alert is TrafficAlert =>
   (alert as TrafficAlert).value != undefined;
 

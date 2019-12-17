@@ -23,7 +23,8 @@ export const requestedConfig: BarkBarkConfig = {
     refreshTime: 500,
     aggregators: [
       { metricName: MetricName.TRAFFIC, timeframe: 10 },
-      { metricName: MetricName.SECTIONS, timeframe: 10 }
+      { metricName: MetricName.SECTIONS, timeframe: 10 },
+      { metricName: MetricName.RESPONSE_CODES, timeframe: 10 }
     ]
   },
   alertsManager: {
@@ -54,7 +55,8 @@ export const testAlertingLogicConfig: BarkBarkConfig = {
     refreshTime: 100,
     aggregators: [
       { metricName: MetricName.TRAFFIC, timeframe: 10 },
-      { metricName: MetricName.SECTIONS, timeframe: 10 }
+      { metricName: MetricName.SECTIONS, timeframe: 10 },
+      { metricName: MetricName.RESPONSE_CODES, timeframe: 10 }
     ]
   },
   alertsManager: {
@@ -87,7 +89,8 @@ export const noSimulationConfig: BarkBarkConfig = {
     refreshTime: 100,
     aggregators: [
       { metricName: MetricName.TRAFFIC, timeframe: 10 },
-      { metricName: MetricName.SECTIONS, timeframe: 10 }
+      { metricName: MetricName.SECTIONS, timeframe: 10 },
+      { metricName: MetricName.RESPONSE_CODES, timeframe: 10 }
     ]
   },
   alertsManager: {
