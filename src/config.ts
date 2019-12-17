@@ -76,12 +76,12 @@ export const testAlertingLogicConfig: BarkBarkConfig = {
 export const noSimulationConfig: BarkBarkConfig = {
   simulation: {
     type: SimulationType.STATIC,
-    refreshTime: 10,
+    refreshTime: 100,
     running: false,
     logfile: path.join(__dirname, '..', 'data', 'logs.csv')
   },
   parser: {
-    refreshTime: 10,
+    refreshTime: 100,
     queueSize: 10000,
     logfile: path.join(__dirname, '..', 'data', 'sample.csv')
   },

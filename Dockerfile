@@ -12,4 +12,4 @@ COPY . /app
 RUN npm run build:prod
 
 # Entrypoint
-CMD [ "node", "./bin/app.js" ]
+CMD [ "npm", "start" ]
