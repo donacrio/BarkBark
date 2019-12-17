@@ -1,5 +1,4 @@
 export type Log = {
-  remotehost: string;
   rfc931: string;
   authuser: string;
   date: number;
@@ -8,14 +7,38 @@ export type Log = {
   bytes: number;
 };
 
-export enum AggregatorName {
+export enum MetricName {
   SECTIONS = 'sections traffic',
   TRAFFIC = 'traffic'
 }
 
-export enum AggregatorUnit {
+export enum MetricUnit {
   HIT_PER_SEC = 'hit/s'
 }
+
+export type Metric = {
+  metricName: MetricName;
+  timeframe: number;
+  unit: MetricUnit;
+  metricValue: TrafficMetricValue | SectionTrafficMetricValue;
+};
+
+export type TrafficMetricValue = {
+  value: number;
+  date: number;
+};
+
+export type SectionTrafficMetricValue = Map<string, TrafficMetricValue>;
+
+export type Alert = TrafficAlert | SectionTrafficAlert;
+
+export type TrafficAlert = {
+  value: number;
+  date: number;
+  recovered: boolean;
+};
+
+export type SectionTrafficAlert = Map<string, TrafficAlert>;
 
 export type BarkBarkConfig = {
   parser: {
@@ -29,7 +52,7 @@ export type BarkBarkConfig = {
   aggregatorManager: {
     refreshTime: number;
     aggregators: {
-      name: AggregatorName;
+      metricName: MetricName;
       timeframe: number;
     }[];
   };
@@ -37,7 +60,7 @@ export type BarkBarkConfig = {
     refreshTime: number;
     alerts: {
       aggregator: {
-        name: AggregatorName;
+        metricName: MetricName;
         timeframe: number;
       };
       threshold: number;

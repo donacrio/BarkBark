@@ -23,12 +23,12 @@ export class BarkBarkApp {
     try {
       config.aggregatorManager.aggregators.forEach(aggregatorConfig =>
         this._aggregatorManager.addAggregator(
-          this._aggregatorManager.getAggregator(aggregatorConfig.name, aggregatorConfig.timeframe)
+          this._aggregatorManager.getAggregator(aggregatorConfig.metricName, aggregatorConfig.timeframe)
         )
       );
       config.alertsManager.alerts.forEach(alertConfig => {
         const aggregator = this._aggregatorManager.getAggregator(
-          alertConfig.aggregator.name,
+          alertConfig.aggregator.metricName,
           alertConfig.aggregator.timeframe
         );
         this._alertManager.addAlertHandlerForAggregator(aggregator, alertConfig.threshold);
@@ -47,8 +47,8 @@ export class BarkBarkApp {
     this._intervals.push(setInterval(() => this._alertManager.compute(), this._alertManager.getRefreshTime()));
     this._intervals.push(
       setInterval(() => {
-        this._ui.setMetricsTableData(this._aggregatorManager.getPrintableMetrics());
-        this._ui.setAlerts(this._alertManager.getPrintableAlerts());
+        this._ui.setMetricsTableData(this._aggregatorManager.getAggregatorMetrics());
+        this._ui.setAlerts(this._alertManager.getAlerts());
         this._ui.render();
       }, this._ui.getRefreshTime())
     );

@@ -1,4 +1,5 @@
 import { Aggregator } from '@barkbark/aggregators';
+import { Alert } from '@barkbark/lib';
 
 export abstract class AlertHandler {
   protected _aggregator: Aggregator;
@@ -9,5 +10,5 @@ export abstract class AlertHandler {
     this._threshold = threshold;
   }
 
-  public abstract compute(): string[];
+  public abstract compute(): Alert | null;
 }

@@ -47,7 +47,6 @@ export class Parser {
     if (
       match &&
       match.groups &&
-      match.groups['remotehost'] &&
       match.groups['rfc931'] &&
       match.groups['authuser'] &&
       match.groups['date'] &&
@@ -60,7 +59,6 @@ export class Parser {
       const bytes = Number.parseInt(match.groups['bytes']);
 
       return {
-        remotehost: match.groups['remotehost'],
         rfc931: match.groups['rfc931'],
         authuser: match.groups['authuser'],
         date,

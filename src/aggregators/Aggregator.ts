@@ -1,20 +1,19 @@
 import { LogQueue } from '@barkbark/parser/LogQueue';
 
-import { AggregatorName, AggregatorUnit } from '../lib/types';
+import { MetricName, MetricUnit, Metric } from '../lib/types';
 
 /**
  * Aggregator abstract class.
  *
- * This class is used to compute a specific metric over the Aggregator timeframe
- * for every encountered hostname.
+ * This class is used to compute a specific metric over the Aggregator timeframe.
  */
 export abstract class Aggregator {
-  protected _name: AggregatorName;
+  protected _name: MetricName;
   protected _logQueue: LogQueue;
   protected _timeframe: number;
-  protected _unit: AggregatorUnit;
+  protected _unit: MetricUnit;
 
-  constructor(name: AggregatorName, logQueue: LogQueue, timeframe: number, unit: AggregatorUnit) {
+  constructor(name: MetricName, logQueue: LogQueue, timeframe: number, unit: MetricUnit) {
     this._name = name;
     this._logQueue = logQueue;
     this._timeframe = timeframe;
@@ -22,7 +21,7 @@ export abstract class Aggregator {
   }
 
   /**
-   * Compute a metric for every hostname,
+   * Compute a metric
    * over logs in the Aggregator queue,
    * over the Aggregator timeframe.
    *
@@ -31,14 +30,12 @@ export abstract class Aggregator {
   public abstract compute(): void;
 
   /**
-   * Return a Map mapping every hostname with its metric value.
-   *
-   * The metric  value is formated as a string to be printable and displayable in the UI.
-   * @returns printable metrics map
+   * Get the aggregator metric
+   * @returns metric
    */
-  public abstract getPrintableMetricsMap(): Map<string, string>;
+  public abstract getMetric(): Metric;
 
-  public getName = (): AggregatorName => this._name;
+  public getName = (): MetricName => this._name;
   public getTimeframe = (): number => this._timeframe;
-  public getUnit = (): AggregatorUnit => this._unit;
+  public getUnit = (): MetricUnit => this._unit;
 }

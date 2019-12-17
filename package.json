@@ -26,7 +26,6 @@
   "homepage": "https://github.com/DonaCrio/BarkBark#readme",
   "devDependencies": {
     "@types/jest": "^24.0.23",
-    "@types/n-readlines": "^1.0.0",
     "@types/node": "^12.12.17",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
@@ -41,7 +40,9 @@
   },
   "dependencies": {
     "@types/blessed": "^0.1.15",
+    "@types/n-readlines": "^1.0.0",
     "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.18",
     "module-alias": "^2.2.2",
     "n-readlines": "^1.0.0"
   },
