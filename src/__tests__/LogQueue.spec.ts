@@ -1,5 +1,5 @@
 import { Log } from '@barkbark/lib';
-import { LogQueue } from '@barkbark/LogQueue';
+import { LogQueue } from '@barkbark/parser/LogQueue';
 
 describe('Test LogQueue.ts', () => {
   let logs: Log[];
@@ -10,7 +10,6 @@ describe('Test LogQueue.ts', () => {
     logQueue = new LogQueue(20);
     for (let i = 0; i < 10; i++) {
       logQueue.enqueue({
-        remotehost: 'host',
         rfc931: '-',
         authuser: 'apache',
         date: i,
@@ -21,7 +20,6 @@ describe('Test LogQueue.ts', () => {
     }
     for (let i = 10; i < 20; i++) {
       const log: Log = {
-        remotehost: 'host',
         rfc931: '-',
         authuser: 'apache',
         date: i,

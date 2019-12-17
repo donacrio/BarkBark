@@ -1,6 +1,5 @@
-import { Parser } from '@barkbark/Parser';
-import { LogQueue } from '@barkbark/LogQueue';
-import { AggregatorManager, AggregatorName, Aggregator } from '@barkbark/aggregators';
+import { LogQueue, Parser } from '@barkbark/parser';
+import { AggregatorManager } from '@barkbark/aggregators';
 import { AlerManager } from '@barkbark/alerts';
 import { BarkBarkUI } from '@barkbark/ui';
 import { BarkBarkConfig } from '@barkbark/lib';
@@ -24,12 +23,12 @@ export class BarkBarkApp {
     try {
       config.aggregatorManager.aggregators.forEach(aggregatorConfig =>
         this._aggregatorManager.addAggregator(
-          this._aggregatorManager.getAggregator(aggregatorConfig.name, aggregatorConfig.timeframe)
+          this._aggregatorManager.getAggregator(aggregatorConfig.metricName, aggregatorConfig.timeframe)
         )
       );
       config.alertsManager.alerts.forEach(alertConfig => {
-        const aggregator: Aggregator = this._aggregatorManager.getAggregator(
-          alertConfig.aggregator.name,
+        const aggregator = this._aggregatorManager.getAggregator(
+          alertConfig.aggregator.metricName,
           alertConfig.aggregator.timeframe
         );
         this._alertManager.addAlertHandlerForAggregator(aggregator, alertConfig.threshold);
@@ -48,8 +47,9 @@ export class BarkBarkApp {
     this._intervals.push(setInterval(() => this._alertManager.compute(), this._alertManager.getRefreshTime()));
     this._intervals.push(
       setInterval(() => {
-        this._ui.setMetricsTableData(this._aggregatorManager.getPrintableMetrics());
-        this._ui.setAlerts(this._alertManager.getPrintableAlerts());
+        this._ui.setMetricsTableData(this._aggregatorManager.getAggregatorMetrics());
+        this._ui.setAlerts(this._alertManager.getAlerts());
+        this._alertManager.clearAlerts();
         this._ui.render();
       }, this._ui.getRefreshTime())
     );

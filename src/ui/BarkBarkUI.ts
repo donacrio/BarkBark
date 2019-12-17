@@ -1,8 +1,28 @@
 import blessed from 'blessed';
+import {
+  Metric,
+  TrafficMetricValue,
+  SectionTrafficMetricValue,
+  SectionTrafficAlert,
+  TrafficAlert,
+  Alert
+} from '@barkbark/lib';
+import {
+  formatMetricName,
+  isTrafficMetricValue,
+  formatTrafficMetricValue,
+  formatSectionTrafficMetricValue,
+  isTrafficAlert,
+  formatTrafficAlert,
+  formatSectionTrafficAlert,
+  formatTrafficMetricUpdateDate,
+  formatSectionTrafficMetricUpdateDate
+} from './utils';
 
 const screenOpt: blessed.Widgets.IScreenOptions = {
   smartCSR: true,
-  title: 'BarkBark'
+  title: 'BarkBark',
+  dockBorders: true
 };
 
 const metricsTableOpts: blessed.Widgets.TableOptions = {
@@ -13,11 +33,11 @@ const metricsTableOpts: blessed.Widgets.TableOptions = {
   tags: true,
   border: {
     type: 'line'
-  }
+  },
+  noCellBorders: true
 };
 
 const alertsLoggerOpts: blessed.Widgets.LogOptions = {
-  title: 'Alerts',
   top: '50%',
   left: '0%',
   height: '50%',
@@ -55,13 +75,31 @@ export class BarkBarkUI {
     this._screen.destroy();
   };
 
-  public setMetricsTableData = (data: string[][]): void => {
-    this._metricsTable.setData(data);
+  public setMetricsTableData = (metrics: Metric[]): void => {
+    metrics = metrics.sort((a, b) => -a.metricName.localeCompare(b.metricName));
+    const data = metrics.map(metric => [
+      formatMetricName(metric),
+      isTrafficMetricValue(metric.metricValue)
+        ? formatTrafficMetricValue(metric.metricValue as TrafficMetricValue)
+        : formatSectionTrafficMetricValue(metric.metricValue as SectionTrafficMetricValue),
+      isTrafficMetricValue(metric.metricValue)
+        ? formatTrafficMetricUpdateDate(metric.metricValue as TrafficMetricValue)
+        : formatSectionTrafficMetricUpdateDate(metric.metricValue as SectionTrafficMetricValue)
+    ]);
+    this._metricsTable.setData([
+      ['{bold}Metric name{/bold}', '{bold}Metric value{/bold}', '{bold}Metric update date{/bold}'],
+      ...data
+    ]);
   };
 
-  public setAlerts = (alerts: string[]): void => {
-    this._alertsLogger.setContent('');
-    alerts.forEach(alert => this._alertsLogger.log(alert));
+  public setAlerts = (alerts: Alert[]): void => {
+    alerts.forEach(alert =>
+      isTrafficAlert(alert)
+        ? this._alertsLogger.log(formatTrafficAlert(alert as TrafficAlert))
+        : formatSectionTrafficAlert(alert as SectionTrafficAlert).forEach(sectionTrafficAlert =>
+            this._alertsLogger.log(sectionTrafficAlert)
+          )
+    );
   };
 
   public getRefreshTime = (): number => this._refreshTime;

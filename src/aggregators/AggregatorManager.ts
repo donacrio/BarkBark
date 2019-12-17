@@ -1,12 +1,18 @@
-import { LogQueue } from '@barkbark/LogQueue';
-import { formatAggregator } from '@barkbark/lib';
+import { LogQueue } from '@barkbark/parser';
+import { Metric, MetricName } from '@barkbark/lib';
 
 import { Aggregator } from './Aggregator';
 import { TrafficAggregator } from './TrafficAggregator';
 import { SectionTrafficAggregator } from './SectionTrafficAggregator';
 
-import { AggregatorName } from '../lib/types';
-
+/**
+ * Main class containing the logic for metric computing.
+ *
+ * It uses an observer pattern with an array of Aggregator instances to compute metrics.
+ * The metrics are computed over a LogQueue instance containing the logs.
+ * The aggregators are created using a Factory pattern to ensure encapsulation of the logic.
+ * @see Aggregator
+ */
 export class AggregatorManager {
   private _logQueue: LogQueue;
   private _aggregators: Aggregator[];
@@ -26,41 +32,25 @@ export class AggregatorManager {
     this._aggregators.push(aggregator);
   };
 
-  public getAggregator = (aggregatorName: AggregatorName, timeframe: number): Aggregator => {
-    switch (aggregatorName) {
-      case AggregatorName.SECTIONS:
+  /**
+   * Return a new Aggregator with a given name and a given timeframe.
+   *
+   * @param metricName the given name (=instance name)
+   * @param timeframe the given timeframe
+   * @returns the newly created aggregator instance AS a Aggregator object
+   */
+  public getAggregator = (metricName: MetricName, timeframe: number): Aggregator => {
+    switch (metricName) {
+      case MetricName.SECTIONS:
         return new SectionTrafficAggregator(this._logQueue, timeframe);
-      case AggregatorName.TRAFFIC:
+      case MetricName.TRAFFIC:
         return new TrafficAggregator(this._logQueue, timeframe);
       default:
-        throw new Error(`Aggregator ${aggregatorName} not yet implemented`);
+        throw new Error(`Aggregator ${metricName} not yet implemented`);
     }
   };
 
-  public getPrintableMetrics = (): string[][] => {
-    const headers: string[] = ['hostname', ...this._aggregators.map(aggregator => formatAggregator(aggregator))];
-    const printableMetrics: string[][] = [headers];
-    const printableMetricsMap = this._getPrintableMetricsMap();
-    for (const hostname of Array.from(printableMetricsMap.keys()).sort()) {
-      printableMetrics.push([hostname, ...printableMetricsMap.get(hostname)!]);
-    }
-    return printableMetrics;
-  };
+  public getAggregatorMetrics = (): Metric[] => this._aggregators.map(aggregator => aggregator.getMetric());
 
   public getRefreshTime = (): number => this._refreshTime;
-
-  private _getPrintableMetricsMap = (): Map<string, string[]> => {
-    const printableMetricsMap = new Map<string, string[]>();
-    const aggregatorsPrintableMetrics: Map<string, string>[] = this._aggregators.map(aggregator =>
-      aggregator.getPrintableMetricsMap()
-    );
-    for (const aggregatorPrintableMetrics of aggregatorsPrintableMetrics) {
-      for (const hostname of aggregatorPrintableMetrics.keys()) {
-        const printableMetricsForHost = printableMetricsMap.has(hostname) ? printableMetricsMap.get(hostname)! : [];
-        printableMetricsForHost.push(aggregatorPrintableMetrics.get(hostname)!);
-        printableMetricsMap.set(hostname, printableMetricsForHost);
-      }
-    }
-    return printableMetricsMap;
-  };
 }

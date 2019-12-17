@@ -1,16 +1,8 @@
 import { AggregatorManager } from './AggregatorManager';
 import { Aggregator } from './Aggregator';
-import { SectionTrafficAggregator, SectionTraffic } from './SectionTrafficAggregator';
-import { TrafficAggregator, Traffic } from './TrafficAggregator';
+import { SectionTrafficAggregator } from './SectionTrafficAggregator';
+import { TrafficAggregator } from './TrafficAggregator';
 
-import { AggregatorName } from '../lib/types';
+import { MetricName } from '../lib/types';
 
-export {
-  AggregatorManager,
-  Aggregator,
-  SectionTrafficAggregator,
-  SectionTraffic,
-  TrafficAggregator,
-  Traffic,
-  AggregatorName
-};
+export { AggregatorManager, Aggregator, SectionTrafficAggregator, TrafficAggregator, MetricName as AggregatorName };

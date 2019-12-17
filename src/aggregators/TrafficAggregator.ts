@@ -1,48 +1,52 @@
-import { LogQueue } from '@barkbark/LogQueue';
-import { formatHitsPerSecond, Log, AggregatorName, AggregatorUnit } from '@barkbark/lib';
+import { LogQueue } from '@barkbark/parser/LogQueue';
+import { Log, TrafficMetricValue, Metric, MetricName, MetricUnit } from '@barkbark/lib';
 
 import { Aggregator } from './Aggregator';
 
-export type Traffic = {
-  value: number;
-  date: number;
-};
-
+/**
+ * Traffic aggregator computing the traffic metric
+ *
+ */
 export class TrafficAggregator extends Aggregator {
-  private _trafficMap: Map<string, Traffic>;
+  /**
+   * Traffic Map mapping every hostname to its TrafficMetric over the Aggregaator timeframe.
+   */
+  private _metricValue: TrafficMetricValue;
 
   constructor(logQueue: LogQueue, timeframe: number) {
-    super(AggregatorName.TRAFFIC, logQueue, timeframe, AggregatorUnit.HIT_PER_SEC);
-    this._trafficMap = new Map();
+    super(MetricName.TRAFFIC, logQueue, timeframe, MetricUnit.HIT_PER_SEC);
+    this._metricValue = { value: 0, date: 0 };
   }
 
+  /**
+   * Compute the traffic
+   *
+   * @see Aggregator#compute
+   */
   public compute = (): void => {
+    // We get the logs from the queue, over the aggregator timeframe
     const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
-    this._trafficMap = this.computeTrafficMap(logs);
+    this._metricValue = this.computeMetricValue(logs);
   };
 
-  public getPrintableMetricsMap = (): Map<string, string> => {
-    const printableMetricsMap: Map<string, string> = new Map();
-    for (const hostname of this._trafficMap.keys()) {
-      const traffic = this._trafficMap.get(hostname)!;
-      printableMetricsMap.set(hostname, `${formatHitsPerSecond(traffic.value)}`);
-    }
-    return printableMetricsMap;
-  };
-
-  public computeTrafficMap = (logs: Log[]): Map<string, Traffic> => {
-    const trafficMap: Map<string, Traffic> = new Map();
+  /**
+   * Compute the traffic for given logs.
+   *
+   * @param logs the given logs
+   */
+  public computeMetricValue = (logs: Log[]): TrafficMetricValue => {
+    let traffic: number = 0;
+    let date: number = 0;
     for (const log of logs) {
-      const trafficForHost: Traffic = trafficMap.has(log.remotehost)
-        ? trafficMap.get(log.remotehost)!
-        : { value: 0, date: 0 };
-      trafficMap.set(log.remotehost, {
-        value: trafficForHost.value + 1 / this._timeframe,
-        date: Math.max(trafficForHost.date, log.date)
-      });
+      (traffic += 1 / this._timeframe), (date = Math.max(date, log.date));
     }
-    return trafficMap;
+    return { value: traffic, date };
   };
 
-  public getTrafficMap = (): Map<string, Traffic> => this._trafficMap;
+  public getMetric = (): Metric => ({
+    metricName: MetricName.TRAFFIC,
+    timeframe: this._timeframe,
+    unit: this._unit,
+    metricValue: this._metricValue
+  });
 }

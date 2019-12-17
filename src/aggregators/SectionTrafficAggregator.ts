@@ -1,65 +1,74 @@
-import { LogQueue } from '@barkbark/LogQueue';
-import { formatHitsPerSecond, Log, AggregatorName, AggregatorUnit } from '@barkbark/lib';
+import { LogQueue } from '@barkbark/parser/LogQueue';
+import { Log, SectionTrafficMetricValue, TrafficMetricValue, Metric, MetricName, MetricUnit } from '@barkbark/lib';
 
 import { Aggregator } from './Aggregator';
 
+/** Regular expression used to extract the section from a log request */
 const REGEX_PATTERN = /^(?<method>\S*) (?<url>\S*) (?<protocol>\S*)$/g;
 
-export type SectionTraffic = {
-  value: number;
-  date: number;
-};
-
+/**
+ * Section traffic aggregator computing the traffic per section
+ */
 export class SectionTrafficAggregator extends Aggregator {
-  private _sectionTrafficMap: Map<string, Map<string, SectionTraffic>>;
+  /** Map mapping a section name with its traffic */
+  private _metricValue: SectionTrafficMetricValue;
 
   constructor(logQueue: LogQueue, timeframe: number) {
-    super(AggregatorName.SECTIONS, logQueue, timeframe, AggregatorUnit.HIT_PER_SEC);
-    this._sectionTrafficMap = new Map();
+    super(MetricName.SECTIONS, logQueue, timeframe, MetricUnit.HIT_PER_SEC);
+    this._metricValue = new Map();
   }
 
+  /**
+   * Compute the traffic per section for every section
+   *
+   * @see Aggregator#compute
+   */
   compute = (): void => {
+    // We get the logs from the queue, over the aggregator timeframe
     const logs = this._logQueue.getLogsInTimeframe(this._timeframe);
-    this._sectionTrafficMap = this.computeSectionTrafficMap(logs);
+    this._metricValue = this.computeMetricValue(logs);
   };
 
-  public getPrintableMetricsMap = (): Map<string, string> => {
-    const printableMetricsMap: Map<string, string> = new Map();
-    for (const hostname of this._sectionTrafficMap.keys()) {
-      const sectionTrafficMap: Map<string, SectionTraffic> = this._sectionTrafficMap.get(hostname)!;
-      const printableMetrics: string[] = [];
-      for (const section of sectionTrafficMap.keys()) {
-        const sectionTraffic: SectionTraffic = sectionTrafficMap.get(section)!;
-        printableMetrics.push(`/${section}: ${formatHitsPerSecond(sectionTraffic.value)}`);
-      }
-      printableMetricsMap.set(hostname, printableMetrics.sort().join('  '));
-    }
-    return printableMetricsMap;
-  };
-
-  computeSectionTrafficMap = (logs: Log[]): Map<string, Map<string, SectionTraffic>> => {
-    const sectionTrafficMap: Map<string, Map<string, SectionTraffic>> = new Map();
+  /**
+   * Compute the traffic per section for every host for given logs.
+   *
+   * @param logs the given logs
+   */
+  computeMetricValue = (logs: Log[]): SectionTrafficMetricValue => {
+    const metricValue: SectionTrafficMetricValue = new Map();
     for (const log of logs) {
+      // We extract the section from the log
       const section = this._getSectionFromLog(log);
       if (section) {
-        const hostSectionTrafficMap: Map<string, SectionTraffic> = sectionTrafficMap.has(log.remotehost)
-          ? sectionTrafficMap.get(log.remotehost)!
-          : new Map();
-        const hostSectionTraffic: SectionTraffic = hostSectionTrafficMap?.has(section)
-          ? hostSectionTrafficMap.get(section)!
+        // We get the traffic computed so far for the log's section
+        const trafficForSection: TrafficMetricValue = metricValue.has(section)
+          ? metricValue.get(section)!
           : { value: 0, date: 0 };
-        hostSectionTrafficMap.set(section, {
-          value: hostSectionTraffic.value + 1 / this._timeframe,
-          date: Math.max(hostSectionTraffic.date, log.date)
+        // We update the traffic with the new log
+        metricValue.set(section, {
+          value: trafficForSection.value + 1 / this._timeframe,
+          date: Math.max(trafficForSection.date, log.date)
         });
-        sectionTrafficMap.set(log.remotehost, hostSectionTrafficMap);
       }
     }
-    return sectionTrafficMap;
+    return metricValue;
   };
 
-  public getSectionTrafficMap = (): Map<string, Map<string, SectionTraffic>> => this._sectionTrafficMap;
+  public getMetric = (): Metric => ({
+    metricName: MetricName.SECTIONS,
+    timeframe: this._timeframe,
+    unit: this._unit,
+    metricValue: this._metricValue
+  });
 
+  /**
+   * Extract the section from a given log request formatted like:
+   * "{METHOD} {url} {protocol}"
+   * 
+   * @param log the given log
+   * @returns the section | null if the extraction fails
+   
+   */
   private _getSectionFromLog = (log: Log): string | null => {
     // We need to reset the regex because it is defined locally
     // Otherwise on 2 consecutives exec, the regex will return null on the second run before reseting

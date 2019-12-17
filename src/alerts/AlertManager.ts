@@ -1,4 +1,5 @@
 import { Aggregator, AggregatorName, TrafficAggregator, SectionTrafficAggregator } from '@barkbark/aggregators';
+import { Alert } from '@barkbark/lib';
 
 import { AlertHandler } from './AlertHandler';
 import { TrafficAlertHandler } from './TrafficAlertHandler';
@@ -6,19 +7,22 @@ import { SectionTrafficAlertHandler } from './SectionTrafficAlertHandler';
 
 export class AlerManager {
   private _alertHandlers: AlertHandler[];
-  private _printableAlerts: string[];
+  private _alerts: Alert[];
   private _refreshTime: number;
 
   constructor(refreshTime: number) {
     this._alertHandlers = [];
-    this._printableAlerts = [];
+    this._alerts = [];
     this._refreshTime = refreshTime;
   }
 
   public compute = (): void => {
-    this._alertHandlers
-      .map(alertHandler => alertHandler.compute())
-      .forEach(printableAlerts => this._printableAlerts.push(...printableAlerts));
+    for (const alertHandler of this._alertHandlers) {
+      const alert = alertHandler.compute();
+      if (alert) {
+        this._alerts.push(alert);
+      }
+    }
   };
 
   public addAlertHandlerForAggregator(aggregator: Aggregator, threshold: number) {
@@ -30,7 +34,11 @@ export class AlerManager {
     }
   }
 
-  public getPrintableAlerts = (): string[] => this._printableAlerts;
+  public clearAlerts = (): void => {
+    this._alerts = [];
+  };
+
+  public getAlerts = (): Alert[] => this._alerts;
 
   public getRefreshTime = (): number => this._refreshTime;
 
