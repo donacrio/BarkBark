@@ -15,7 +15,7 @@ export class BarkBarkApp {
   constructor(config: BarkBarkConfig) {
     this._intervals = [];
     this._logsQueue = new LogQueue(config.parser.queueSize);
-    this._parser = new Parser(config.parser.logfile, this._logsQueue, config.parser.refreshTime);
+    this._parser = new Parser(config.simulation.output, this._logsQueue, config.parser.refreshTime);
     this._aggregatorManager = new AggregatorManager(this._logsQueue, config.aggregatorManager.refreshTime);
     this._alertManager = new AlerManager(config.alertsManager.refreshTime);
     this._ui = new BarkBarkUI(config.ui.refreshTime);

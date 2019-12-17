@@ -2,6 +2,10 @@ import path from 'path';
 import { BarkBarkConfig, MetricName } from '@barkbark/lib';
 
 export const basicConfig: BarkBarkConfig = {
+  simulation: {
+    running: false,
+    output: path.join(__dirname, '..', 'data', 'logs.csv')
+  },
   parser: {
     refreshTime: 10,
     queueSize: 10000,
@@ -27,6 +31,10 @@ export const basicConfig: BarkBarkConfig = {
 };
 
 export const requestedConfig: BarkBarkConfig = {
+  simulation: {
+    running: false,
+    output: path.join(__dirname, '..', 'data', 'logs.csv')
+  },
   parser: {
     refreshTime: 10,
     queueSize: 10000,
@@ -49,6 +57,10 @@ export const requestedConfig: BarkBarkConfig = {
 };
 
 export const testConfig: BarkBarkConfig = {
+  simulation: {
+    running: false,
+    output: path.join(__dirname, '..', 'data', 'logs.csv')
+  },
   parser: {
     refreshTime: 1,
     queueSize: 1000,

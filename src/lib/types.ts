@@ -41,6 +41,10 @@ export type TrafficAlert = {
 export type SectionTrafficAlert = Map<string, TrafficAlert>;
 
 export type BarkBarkConfig = {
+  simulation: {
+    running: boolean;
+    output: string;
+  };
   parser: {
     refreshTime: number;
     queueSize: number;

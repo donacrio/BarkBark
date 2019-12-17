@@ -1,0 +1,11 @@
+"remotehost","rfc931","authuser","date","request","status","bytes"
+"localhost","-","apache",1576585610380,"PUT /admin/ HTTP/1.0",200,49
+"localhost","-","apache",1576585610381,"HEAD /admin/rduwn HTTP/1.0",200,1311
+"localhost","-","apache",1576585610381,"PUT / HTTP/1.0",200,323
+"localhost","-","apache",1576585610381,"OPTIONS /report/ HTTP/1.0",200,1310
+"localhost","-","apache",1576585610381,"HEAD /report/ HTTP/1.0",200,149
+"localhost","-","apache",1576585610382,"POST /api/ HTTP/1.0",500,13
+"localhost","-","apache",1576585610382,"HEAD /report/j0rz4/avi8l HTTP/1.0",200,376
+"localhost","-","apache",1576585610382,"OPTIONS /api/ HTTP/1.0",500,70
+"localhost","-","apache",1576585610382,"HEAD /report/ HTTP/1.0",200,507
+"localhost","-","apache",1576585610382,"GET /admin/ogma3 HTTP/1.0",200,712
