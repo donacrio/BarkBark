@@ -39,7 +39,7 @@ export class SectionTrafficAggregator extends Aggregator {
     for (const log of logs) {
       // We extract the section from the log
       const section = this._getSectionFromLog(log);
-      if (section) {
+      if (section || section === '') {
         // We get the traffic computed so far for the log's section
         const trafficForSection: TrafficMetricValue = metricValue.has(section)
           ? metricValue.get(section)!

@@ -11,15 +11,54 @@ export class LogSimulator {
     this._outputFile = outputFile;
     this._refreshTime = refreshTime;
     fs.writeFileSync(this._outputFile, '');
-    this.writeLogLine('"remotehost","rfc931","authuser","date","request","status","bytes"');
+    this.writeLogLine(this._outputFile, '"remotehost","rfc931","authuser","date","request","status","bytes"');
   }
-  public write = (): void => this.writeLogLine(this.generateLogLine());
+  public write = (): void => {
+    const numberOfLogs = Math.round(Math.random());
+    const date = this._generateDateInSec();
+    for (let i = 0; i < numberOfLogs; i++) {
+      this.writeLogLine(this._outputFile, this.generateLogLine(date));
+    }
+  };
 
-  public generateLogLine = (): string =>
-    `"localhost","-","apache",${this._generateDateInSec()},"${this._generateRequest()}",${this._generateStatusCode()},${this.generateBytesSize()}`;
+  public generateLogLine = (date: number): string =>
+    `"localhost","-","apache",${date},"${this._generateRequest()}",${this._generateStatusCode()},${this.generateBytesSize()}`;
 
-  public writeLogLine = (line: string): void => {
-    fs.appendFileSync(this._outputFile, `${line}\n`);
+  public writeLogLine = (outputFile: string, line: string): void => {
+    fs.appendFileSync(outputFile, `${line}\n`);
+  };
+
+  public createAlertingLogicTestSimulation = (outputFile: string): void => {
+    fs.writeFileSync(outputFile, '');
+    this.writeLogLine(outputFile, '"remotehost","rfc931","authuser","date","request","status","bytes"');
+    let date = Math.round(Date.now() / 1000);
+    for (let i = 0; i < 1000; i++) {
+      date += 1;
+      this.writeLogLine(
+        outputFile,
+        `"localhost","-","apache",${Math.floor(
+          date
+        )},"${this._generateRequest()}",${this._generateStatusCode()},${this.generateBytesSize()}`
+      );
+    }
+    for (let i = 0; i < 2000; i++) {
+      date += 0.05;
+      this.writeLogLine(
+        outputFile,
+        `"localhost","-","apache",${Math.floor(
+          date
+        )},"${this._generateRequest()}",${this._generateStatusCode()},${this.generateBytesSize()}`
+      );
+    }
+    for (let i = 0; i < 5000; i++) {
+      date += 1;
+      this.writeLogLine(
+        outputFile,
+        `"localhost","-","apache",${Math.floor(
+          date
+        )},"${this._generateRequest()}",${this._generateStatusCode()},${this.generateBytesSize()}`
+      );
+    }
   };
 
   public getRefreshTime = (): number => this._refreshTime;

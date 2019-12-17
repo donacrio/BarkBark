@@ -9,6 +9,7 @@ import {
   Alert,
   TrafficAlert,
   SectionTrafficAlert,
+  SimulationType,
   BarkBarkConfig
 } from './types';
 
@@ -23,5 +24,6 @@ export {
   Alert,
   TrafficAlert,
   SectionTrafficAlert,
+  SimulationType,
   BarkBarkConfig
 };

@@ -40,8 +40,15 @@ export type TrafficAlert = {
 
 export type SectionTrafficAlert = Map<string, TrafficAlert>;
 
+export enum SimulationType {
+  RUNNING,
+  STATIC,
+  TEST
+}
+
 export type BarkBarkConfig = {
   simulation: {
+    type: SimulationType;
     refreshTime: number;
     running: boolean;
     logfile: string;
