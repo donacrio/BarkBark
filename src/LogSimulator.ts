@@ -5,22 +5,26 @@ export class LogSimulator {
   private _requestMethods = ['GET', 'PUT', 'POST', 'HEAD', 'OPTIONS'];
   private _requestSections = ['/', '/api', '/report', '/admin'];
   private _outputFile: string;
+  private _refreshTime: number;
 
-  constructor(outputFile: string) {
+  constructor(outputFile: string, refreshTime: number) {
     this._outputFile = outputFile;
+    this._refreshTime = refreshTime;
     fs.writeFileSync(this._outputFile, '');
     this.writeLogLine('"remotehost","rfc931","authuser","date","request","status","bytes"');
   }
   public write = (): void => this.writeLogLine(this.generateLogLine());
 
   public generateLogLine = (): string =>
-    `"localhost","-","apache",${this._generateDate()},"${this._generateRequest()}",${this._generateStatusCode()},${this.generateBytesSize()}`;
+    `"localhost","-","apache",${this._generateDateInSec()},"${this._generateRequest()}",${this._generateStatusCode()},${this.generateBytesSize()}`;
 
   public writeLogLine = (line: string): void => {
     fs.appendFileSync(this._outputFile, `${line}\n`);
   };
 
-  private _generateDate = (): number => Date.now();
+  public getRefreshTime = (): number => this._refreshTime;
+
+  private _generateDateInSec = (): number => Math.floor(Date.now() / 1000);
 
   private _generateRequest = () => {
     const requestMethod = this._requestMethods[Math.floor(Math.random() * this._requestMethods.length)];

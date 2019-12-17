@@ -42,8 +42,9 @@ export type SectionTrafficAlert = Map<string, TrafficAlert>;
 
 export type BarkBarkConfig = {
   simulation: {
+    refreshTime: number;
     running: boolean;
-    output: string;
+    logfile: string;
   };
   parser: {
     refreshTime: number;

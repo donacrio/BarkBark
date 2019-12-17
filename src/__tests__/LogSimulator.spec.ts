@@ -7,7 +7,7 @@ describe('Test LogSimulator.ts', () => {
   let logSimulator: LogSimulator;
 
   beforeEach(() => {
-    logSimulator = new LogSimulator(path.join(__dirname, 'logs_test.csv'));
+    logSimulator = new LogSimulator(path.join(__dirname, 'logs_test.csv'), 1);
     REGEX_PATTERN.lastIndex = 0;
   });
 
