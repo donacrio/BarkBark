@@ -14,7 +14,7 @@ describe('Test LogSimulator.ts', () => {
   it('should generate a valid log lines', () => {
     for (let i = 0; i < 10; i++) {
       REGEX_PATTERN.lastIndex = 0;
-      const line = logSimulator.generateLogLine(Date.now() / 1000);
+      const line = logSimulator.generateLogLine(Math.round(Date.now() / 1000));
       const match = REGEX_PATTERN.exec(line);
       expect(match).not.toBeNull();
     }

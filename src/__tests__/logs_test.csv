@@ -1,11 +1,5 @@
 "remotehost","rfc931","authuser","date","request","status","bytes"
-"localhost","-","apache",1576587474,"POST /report/ HTTP/1.0",200,1439
-"localhost","-","apache",1576587474,"OPTIONS /admin/gxuqa/pozux HTTP/1.0",200,1087
-"localhost","-","apache",1576587474,"HEAD /report/0ul20 HTTP/1.0",200,834
-"localhost","-","apache",1576587474,"HEAD /report/1o2gk HTTP/1.0",200,355
-"localhost","-","apache",1576587474,"POST /api/it75p/lur2k HTTP/1.0",200,118
-"localhost","-","apache",1576587474,"OPTIONS /api/6up4m HTTP/1.0",200,329
-"localhost","-","apache",1576587474,"PUT /admin/g4a56 HTTP/1.0",200,573
-"localhost","-","apache",1576587474,"PUT /report/ HTTP/1.0",200,594
-"localhost","-","apache",1576587474,"GET /report/6pf0t HTTP/1.0",200,910
-"localhost","-","apache",1576587474,"POST / HTTP/1.0",200,680
+"localhost","-","apache",1576594206,"GET /report/xtaxl HTTP/1.0",200,291
+"localhost","-","apache",1576594206,"GET / HTTP/1.0",200,1430
+"localhost","-","apache",1576594206,"POST / HTTP/1.0",200,204
+"localhost","-","apache",1576594206,"GET / HTTP/1.0",200,418

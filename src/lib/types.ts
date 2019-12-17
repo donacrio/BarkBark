@@ -30,8 +30,10 @@ export type TrafficMetricValue = {
   date: number;
 };
 
+/** Metric value that maps a section to its traffic */
 export type SectionTrafficMetricValue = Map<string, TrafficMetricValue>;
 
+/** Metric value that maps a response code to its traffic */
 export type ResponseCodeMetricValue = Map<number, TrafficMetricValue>;
 
 export type Alert = TrafficAlert | SectionTrafficAlert;

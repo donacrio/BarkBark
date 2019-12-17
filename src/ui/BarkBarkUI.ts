@@ -10,6 +10,8 @@ import {
   formatMetricUpdateDate
 } from './utils';
 
+//---------- WIDGET OPTIONS ----------
+
 const screenOpt: blessed.Widgets.IScreenOptions = {
   smartCSR: true,
   title: 'BarkBark',
@@ -39,6 +41,13 @@ const alertsLoggerOpts: blessed.Widgets.LogOptions = {
   }
 };
 
+//---------- END ----------
+
+/**
+ * User interface of the app.
+ *
+ * Metrics and alerts can be set using respectively setMetricsTableData and setAlerts.
+ */
 export class BarkBarkUI {
   private _screen: blessed.Widgets.Screen;
   private _metricsTable: blessed.Widgets.TableElement;
@@ -66,19 +75,31 @@ export class BarkBarkUI {
     this._screen.destroy();
   };
 
+  /**
+   * Set view of the given metrics.
+   *
+   * @param metrics the given metrics
+   */
   public setMetricsTableData = (metrics: Metric[]): void => {
+    // We sort the metrics for display purpose
     metrics = metrics.sort((a, b) => -a.metricName.localeCompare(b.metricName));
     const data = metrics.map(metric => [
       formatMetricName(metric),
       formatMetricValue(metric),
       formatMetricUpdateDate(metric)
     ]);
+    // We set the headers and the data
     this._metricsTable.setData([
       ['{bold}Metric name{/bold}', '{bold}Metric value{/bold}', '{bold}Metric update date{/bold}'],
       ...data
     ]);
   };
 
+  /**
+   * Log the given new alerts into the alert logger
+   *
+   * @param alert the given alerts
+   */
   public setAlerts = (alerts: Alert[]): void => {
     alerts.forEach(alert =>
       isTrafficAlert(alert)

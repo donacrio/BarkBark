@@ -25,6 +25,9 @@ export class AggregatorManager {
     this._refreshTime = refreshTime;
   }
 
+  /**
+   * Call the compute method of every aggregator to compute the metrics.
+   */
   public compute = (): void => {
     this._aggregators.forEach(aggregator => aggregator.compute());
   };
